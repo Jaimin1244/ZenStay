@@ -1,0 +1,369 @@
+﻿/* Root Variables for Reusability */
+:root {
+    --primary-color: #0F3A31;
+    --secondary-color: #145847;
+    --accent-color: #c8e6c9;
+    --text-light: #f1f1f1;
+    --text-dark: #333;
+    --gradient-bg: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    --transition-speed: 0.3s;
+    --hero-bg: url("images/hero-bg.jpg");
+    --about-bg: url("images/abou-bg.jpg");
+    --contact-bg: url("images/contact-bg.jpg");
+}
+
+/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #f8f9fa, #ced4da);
+    color: var(--text-dark);
+}
+
+.container-custom {
+    max-width: 100%;
+}
+
+/* Navigation */
+.navbar {
+    background-color: var(--primary-color);
+}
+
+.logo-brand i,
+.logo-brand span {
+    background: linear-gradient(135deg, #f5ecc9 0%, #dbc078 30%, #efdfa2 50%, #dbc078 70%, #f5ecc9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-link {
+    color: var(--text-light) !important;
+    transition: color var(--transition-speed);
+}
+
+    .nav-link.active {
+        background-color: var(--accent-color);
+        color: var(--primary-color) !important;
+        font-weight: bold;
+        border-radius: 4px;
+    }
+
+/* Popover Styles */
+.popover {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    background: #fff;
+    padding: 8px 0;
+}
+
+    /* Popover Arrow */
+    .popover .popover-arrow {
+        display: block !important;
+    }
+
+/* Popover Body */
+.popover-body {
+    padding: 5px 0;
+}
+
+    /* Dropdown Items */
+    .popover-body .dropdown-item {
+        padding: 5px 15px;
+        font-size: 10px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #333;
+        transition: background 0.2s ease-in-out, transform 0.1s;
+    }
+
+        .popover-body .dropdown-item i {
+            font-size: 16px;
+            color: #555;
+        }
+
+        /* Hover effect */
+        .popover-body .dropdown-item:hover {
+            background-color: var(--accent-color);
+            transform: scale(1.02);
+        }
+
+    /* Divider */
+    .popover-body .dropdown-divider {
+        background-color: #ccc;
+        height: 1px;
+        margin: 5px 0;
+    }
+
+    /* Logout Button */
+    .popover-body .text-danger {
+        color: #d9534f !important;
+        font-weight: 600;
+    }
+
+        .popover-body .text-danger:hover {
+            background-color: rgba(217, 83, 79, 0.1);
+            color: #c9302c;
+        }
+
+
+/* Hero Section */
+.hero-section, .about-hero, .contact-hero {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    position: relative;
+    height: 450px;
+}
+
+.hero-section {
+    background-image: var(--hero-bg);
+}
+
+.about-hero {
+    background-image: var(--about-bg);
+}
+
+.contact-hero {
+    background-image: var(--contact-bg);
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    color: var(--text-light);
+    text-align: center;
+    padding: 120px 20px;
+}
+
+/* Search Bar */
+.search-bar {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Featured Hotels */
+.featured-hotels .hotel-card {
+    transition: transform var(--transition-speed) ease;
+}
+
+    .featured-hotels .hotel-card:hover {
+        transform: translateY(-10px);
+    }
+
+/* Section Titles */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    text-align: center;
+    position: relative;
+}
+
+    .section-title::after {
+        content: "";
+        width: 80px;
+        height: 4px;
+        background: var(--secondary-color);
+        display: block;
+        margin: 0.5rem auto;
+    }
+
+/* Testimonials */
+.testimonial-card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform var(--transition-speed);
+}
+
+    .testimonial-card:hover {
+        transform: scale(1.02);
+    }
+
+/* Call-to-Action */
+.cta-section {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    padding: 60px 20px;
+    text-align: center;
+}
+
+    .cta-section .btn-primary {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+        transition: background-color var(--transition-speed);
+    }
+
+        .cta-section .btn-primary:hover {
+            background-color: var(--text-light);
+            color: var(--secondary-color);
+        }
+
+/* Contact Section */
+.contact-section .contact-info, .contact-section .contact-form {
+    background: var(--text-light);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+.contact-section .contact-details li {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.contact-section .contact-details a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color var(--transition-speed);
+}
+
+    .contact-section .contact-details a:hover {
+        color: var(--secondary-color);
+    }
+
+/* Footer */
+footer {
+    background: var(--gradient-bg);
+    color: var(--text-light);
+    padding: 60px 0;
+}
+
+    footer h5 {
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    footer a {
+        color: var(--text-light);
+        transition: color var(--transition-speed);
+        text-decoration: none;
+    }
+
+        footer a:hover {
+            color: var(--accent-color);
+        }
+
+    footer .social-icons li a {
+        font-size: 1.5rem;
+        margin-right: 10px;
+        transition: transform var(--transition-speed), color var(--transition-speed);
+        display: inline-block;
+    }
+
+        footer .social-icons li a:hover {
+            transform: scale(1.1);
+            color: var(--accent-color);
+        }
+
+#newsletter-form input {
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    border: none;
+}
+
+#newsletter-form button {
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+}
+
+
+/* Login Page Styles */
+.login-card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .login-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+.bg-zenstay {
+    background: linear-gradient(135deg, #0F3A31, #145847);
+    color: #fff;
+}
+
+/* Input Fields */
+.input-group-text {
+    background-color: #0F3A31;
+    color: #fff;
+    border: none;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s ease;
+}
+
+    .form-control:focus {
+        border-color: #145847;
+        box-shadow: 0 0 5px rgba(20, 88, 71, 0.5);
+    }
+
+.form-select:focus {
+    border-color: #145847 !important;
+    box-shadow: 0 0 5px rgba(20, 88, 71, 0.5) !important;
+}
+
+/* Toggle Password Button */
+.toggle-password {
+    border: none;
+    color: #0F3A31;
+    transition: color 0.3s;
+}
+
+    .toggle-password:hover {
+        color: #145847;
+    }
+
+/* Submit Button */
+.btn-zenstay {
+    background: #145847;
+    color: white;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+    .btn-zenstay:hover {
+        background: #0F3A31;
+        color: white;
+    }
+
+/* Outline ZenStay Button */
+.btn-outline-zenstay {
+    background-color: transparent !important;
+    color: #145847 !important;
+    border: 1px solid #145847 !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+}
+
+    .btn-outline-zenstay:hover {
+        background: #145847 !important;
+        color: white !important;
+    }
+
+
+/* Responsive Tweaks */
+@media (max-width: 576px) {
+    .login-card {
+        padding: 20px;
+    }
+}
+

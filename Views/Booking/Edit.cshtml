@@ -1,0 +1,71 @@
+﻿@model Learn_Auth.Models.Booking
+
+@{
+    ViewBag.Title = "Edit Booking";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg rounded-3 border-0" style="max-width: 600px; margin: auto; background-color: #f8f9fa;">
+        <div class="card-header text-white bg-dark rounded-top">
+            <h3 class="text-center m-2">
+                <i class="bi bi-pencil-square"></i> Edit Booking
+            </h3>
+        </div>
+        <div class="card-body p-4">
+            @using (Html.BeginForm("Edit", "Booking", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.BookingID)
+
+                <!-- Room ID -->
+                <div class="mb-3">
+                    @Html.LabelFor(model => model.RoomID, new { @class = "form-label fw-bold" })
+                    <div class="input-group">
+                        <span class="input-group-text bg-secondary text-white"><i class="bi bi-door-closed"></i></span>
+                        @Html.TextBoxFor(model => model.RoomID, new { @class = "form-control", @readonly = "readonly", @style = "background-color: #e9ecef;" })
+                    </div>
+                    <small class="text-muted">Room ID is auto-assigned and cannot be changed.</small>
+                </div>
+
+                <!-- Check-In Date -->
+                <div class="mb-3">
+                    @Html.LabelFor(model => model.CheckInDate, new { @class = "form-label fw-bold" })
+                    <div class="input-group">
+                        <span class="input-group-text bg-secondary text-white"><i class="bi bi-calendar-check"></i></span>
+                        @Html.TextBoxFor(model => model.CheckInDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", id = "checkInDate", @min = DateTime.Now.ToString("yyyy-MM-dd") })
+                    </div>
+                </div>
+
+                <!-- Check-Out Date -->
+                <div class="mb-3">
+                    @Html.LabelFor(model => model.CheckOutDate, new { @class = "form-label fw-bold" })
+                    <div class="input-group">
+                        <span class="input-group-text bg-secondary text-white"><i class="bi bi-calendar-x"></i></span>
+                        @Html.TextBoxFor(model => model.CheckOutDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", id = "checkOutDate", @min = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") })
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-success px-4">
+                        <i class="bi bi-check-circle"></i> Save Changes
+                    </button>
+                    <a href="@Url.Action("UserBookings")" class="btn btn-outline-secondary px-4">
+                        <i class="bi bi-arrow-left"></i> Cancel
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        // Ensure Check-Out Date is after Check-In Date
+        document.getElementById("checkInDate").addEventListener("change", function () {
+            var checkInDate = new Date(this.value);
+            var checkOutDate = document.getElementById("checkOutDate");
+            checkOutDate.min = new Date(checkInDate.setDate(checkInDate.getDate() + 1)).toISOString().split('T')[0];
+        });
+    </script>
+}

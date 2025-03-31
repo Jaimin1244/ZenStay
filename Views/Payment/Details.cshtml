@@ -1,0 +1,23 @@
+﻿@model Learn_Auth.Models.Payment
+@{
+    ViewBag.Title = "Payment Details";
+}
+<div class="container mt-4">
+    <h2><i class="bi bi-receipt"></i> Payment Details</h2>
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Booking ID:</strong> @Model.BookingID</li>
+        <li class="list-group-item"><strong>Amount:</strong> @Model.PaymentAmount.ToString("C")</li>
+        <li class="list-group-item">
+            <strong>Status:</strong>
+            <span class="badge bg-@(Model.PaymentStatus == "Completed" ? "success" : "warning")">
+                @Model.PaymentStatus
+            </span>
+        </li>
+        <li class="list-group-item"><strong>Payment Date:</strong> @Model.PaymentDate.ToShortDateString()</li>
+    </ul>
+    <div class="mt-3">
+        <a href="@Url.Action("Index")" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>

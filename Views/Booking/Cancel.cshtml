@@ -1,0 +1,26 @@
+﻿@model Learn_Auth.Models.Booking
+
+@{
+    ViewBag.Title = "Cancel Booking";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Cancel Booking</h2>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Are you sure you want to cancel Booking #@Model.BookingID?</h5>
+            <p class="card-text"><strong>Room ID:</strong> @Model.RoomID</p>
+            <p class="card-text"><strong>Check-In:</strong> @Model.CheckInDate.ToShortDateString()</p>
+            <p class="card-text"><strong>Check-Out:</strong> @Model.CheckOutDate.ToShortDateString()</p>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Cancel", "Booking", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.BookingID)
+        <button type="submit" class="btn btn-danger mt-3">Yes, Cancel Booking</button>
+        <a href="@Url.Action("UserBookings")" class="btn btn-secondary mt-3">No, Go Back</a>
+    }
+</div>

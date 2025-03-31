@@ -1,0 +1,50 @@
+﻿@model Learn_Auth.Models.Room
+
+<div class="modal-header bg-gradient bg-info text-white">
+    <h5 class="modal-title" id="roomDetailsModalLabel">
+        <i class="bi bi-eye-fill"></i> Room Details
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="card border-0 shadow-sm p-3">
+        <div class="row g-4 align-items-center">
+            <!-- Room Image -->
+            <div class="col-md-5 text-center">
+                <img id="roomImagePreview"
+                     src="@(Model.RoomImage != null ? Url.Content(Model.RoomImage) : "https://via.placeholder.com/400?text=Room+Image")"
+                     alt="Room Image"
+                     class="img-fluid rounded-3 shadow-sm border"
+                     style="max-width: 100%; height: auto; object-fit: cover;" />
+            </div>
+
+            <!-- Room Information -->
+            <div class="col-md-7">
+                <h3 class="fw-bold text-primary">@Model.RoomType</h3>
+                <p class="mb-2 text-muted"><i class="bi bi-hash"></i> <strong>Room Number:</strong> @Model.RoomNumber</p>
+                <p class="mb-2 text-muted"><i class="bi bi-currency-rupee"></i> <strong>Price:</strong> <span class="text-success fw-semibold">₹@Model.Price</span></p>
+                <p class="mb-2 text-muted"><i class="bi bi-building"></i> <strong>Hotel:</strong> <span class="fw-semibold">@Model.Hotel.HotelName</span></p>
+                <p class="mb-2 text-muted">
+                    <i class="bi bi-check-circle-fill text-success"></i> <strong>Availability:</strong>
+                    <span class="fw-semibold badge @(Model.IsAvailable ? "bg-success" : "bg-danger")">
+                        @(Model.IsAvailable ? "Available" : "Not Available")
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h5 class="fw-bold text-secondary"><i class="bi bi-list-check"></i> Amenities</h5>
+        <div class="border rounded-3 p-3 bg-light text-dark shadow-sm">
+            <p class="mb-0">@Model.Amenities</p>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer d-flex justify-content-end">
+    <button type="button" class="btn btn-outline-secondary btn-lg" data-bs-dismiss="modal">
+        <i class="bi bi-x-lg"></i> Close
+    </button>
+</div>

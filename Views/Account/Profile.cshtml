@@ -1,0 +1,102 @@
+﻿@model Learn_Auth.ViewModel.ProfileViewModel
+@{
+    ViewBag.Title = "My Profile";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card login-card shadow-lg border-0 rounded">
+                <!-- Card Header -->
+                <div class="card-header bg-zenstay text-white text-center py-4">
+                    <h2 class="mb-0">
+                        <i class="bi bi-person-circle me-2"></i> My Profile
+                    </h2>
+                    <p class="mb-0 small">View and update your personal information</p>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="row align-items-center mb-4">
+                        <!-- Profile Picture -->
+                        <div class="col-md-4 text-center">
+                            @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+                            {
+                                <img src="@Model.ProfilePictureUrl" alt="Profile Picture" class="img-fluid rounded-circle shadow-sm" style="width:150px; height:150px;">
+                            }
+                            else
+                            {
+                                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style="width:150px; height:150px;">
+                                    <i class="bi bi-person-circle text-secondary" style="font-size:100px;"></i>
+                                </div>
+                            }
+                        </div>
+                        <!-- User Details -->
+                        <div class="col-md-8">
+                            <h4 class="mb-1">@Model.UserName</h4>
+                            <p class="mb-1">
+                                <i class="bi bi-envelope-fill me-2"></i>@Model.Email
+                            </p>
+                            <p class="mb-0">
+                                <i class="bi bi-telephone-fill me-2"></i>@Model.ContactNo
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Email Verification Status -->
+                    <div class="mb-4">
+                        @if (Model.IsVerified)
+                        {
+                            <div class="alert alert-success d-flex align-items-center" role="alert">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                Your email is verified.
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                Your email is not verified.
+                                <a href="@Url.Action("SendVerificationEmail", "Account")" class="btn btn-sm btn-outline-primary ms-auto">
+                                    Verify Now
+                                </a>
+                            </div>
+                        }
+                    </div>
+
+                    <hr />
+
+                    <!-- Personal Information -->
+                    <div class="mb-3">
+                        <h5 class="mb-3">
+                            <i class="bi bi-info-circle-fill me-2"></i> Personal Information
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-2">
+                                    <strong>First Name:</strong> <span>@Model.FirstName</span>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2">
+                                    <strong>Last Name:</strong> <span>@Model.LastName</span>
+                                </p>
+                            </div>
+                        </div>
+                        <p class="mb-0">
+                            <strong>Address:</strong> <span>@Model.Address</span>
+                        </p>
+                    </div>
+                </div>
+                <!-- Card Footer -->
+                <div class="card-footer bg-white text-end">
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary me-2">
+                        <i class="bi bi-arrow-left me-1"></i> Cancel
+                    </a>
+                    <a href="@Url.Action("EditProfile", "Account")" class="btn btn-primary">
+                        <i class="bi bi-pencil-square me-1"></i> Edit Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+﻿@model Learn_Auth.Models.Room
+
+<div class="modal-header bg-gradient bg-danger text-white">
+    <h5 class="modal-title" id="deleteRoomModalLabel">
+        <i class="bi bi-trash-fill"></i> Confirm Delete Room
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body text-center">
+    <div class="alert alert-danger p-3">
+        <i class="bi bi-exclamation-triangle-fill display-4 text-danger"></i>
+        <h4 class="fw-bold mt-3">Are you sure you want to delete this room?</h4>
+        <p class="text-muted">This action cannot be undone.</p>
+    </div>
+
+    <div class="card border-0 shadow-sm p-3">
+        <h5 class="fw-bold text-primary">@Model.RoomType</h5>
+        <p class="mb-2 text-muted"><i class="bi bi-hash"></i> <strong>Room Number:</strong> @Model.RoomNumber</p>
+        <p class="mb-2 text-muted"><i class="bi bi-currency-rupee"></i> <strong>Price:</strong> ₹@Model.Price</p>
+        <p class="mb-2 text-muted"><i class="bi bi-building"></i> <strong>Hotel:</strong> @Model.Hotel.HotelName</p>
+    </div>
+</div>
+
+<div class="modal-footer d-flex justify-content-between">
+    @using (Html.BeginForm("Delete", "Room", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.RoomId)
+        <button type="submit" class="btn btn-danger btn-lg">
+            <i class="bi bi-trash"></i> Delete
+        </button>
+    }
+    <button type="button" class="btn btn-outline-secondary btn-lg" data-bs-dismiss="modal">
+        <i class="bi bi-x-lg"></i> Cancel
+    </button>
+</div>

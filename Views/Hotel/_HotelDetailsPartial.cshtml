@@ -1,0 +1,136 @@
+﻿@model Learn_Auth.Models.Hotel
+
+<style>
+    /* Main Container */
+    .hotel-container {
+        padding: 20px;
+    }
+
+    /* Hotel Header */
+    .hotel-header {
+        position: relative;
+        min-height: 350px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 12px;
+        color: white;
+        display: flex;
+        align-items: center;
+        padding: 20px;
+    }
+
+        /* Dark Overlay */
+        .hotel-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+        }
+
+    .hotel-content {
+        position: relative;
+        z-index: 2;
+        padding: 20px;
+    }
+
+    /* Hotel Details Section */
+    .hotel-details {
+        display: flex;
+        align-items: center;
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-top: -50px;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Image Carousel */
+    .carousel-container {
+        width: 50%;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .carousel-item img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+    }
+
+    /* Description */
+    .hotel-description {
+        width: 50%;
+        padding-left: 20px;
+    }
+
+    /* CTA Button */
+    .view-rooms-btn {
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="container hotel-container">
+    <!-- Hotel Header -->
+    <div class="hotel-header shadow-lg" style="background-image: url('@(string.IsNullOrEmpty(Model.HotelImages) ? Url.Content("~/Content/Images/no-image.jpg") : Url.Content(Model.HotelImages.Split(',')[0].Trim()))');">
+        <div class="hotel-content">
+            <h1 class="fw-bold">@Model.HotelName</h1>
+            <p><i class="bi bi-geo-alt-fill"></i> @Model.Address, @Model.City, @Model.State, @Model.Country - @Model.ZipCode</p>
+            <p><i class="bi bi-telephone-fill"></i> @Model.ContactInfo</p>
+        </div>
+    </div>
+
+    <!-- Hotel Details -->
+    <div class="hotel-details">
+        <!-- Left: Carousel -->
+        <div class="carousel-container">
+            @if (!string.IsNullOrEmpty(Model.HotelImages))
+            {
+                var images = Model.HotelImages.Split(',');
+                <div id="hotelCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (int i = 0; i < images.Length; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@Url.Content(images[i].Trim())" class="d-block w-100" alt="Hotel Image">
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#hotelCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#hotelCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            }
+            else
+            {
+                <img src="@Url.Content("~/Content/Images/no-image.jpg")" class="w-100 rounded" alt="No Image Available">
+            }
+        </div>
+
+        <!-- Right: Hotel Information -->
+        <div class="hotel-description">
+            <h5>Description</h5>
+            <p>@Model.Description</p>
+            <p><strong>Check-in:</strong> Model.CheckInTime</p>
+            <p><strong>Check-out:</strong> Model.CheckOutTime</p>
+            <p><strong>Rating:</strong> ⭐⭐⭐⭐⭐ (Model.Rating / 5)</p>
+        </div>
+    </div>
+
+    <!-- View Rooms Button -->
+    <div class="view-rooms-btn">
+        <a href="@Url.Action("Index", "Room", new { hotelId = Model.HotelId })" class="btn btn-primary">
+            <i class="bi bi-door-open"></i> View Available Rooms
+        </a>
+    </div>
+</div>

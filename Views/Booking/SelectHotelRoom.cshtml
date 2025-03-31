@@ -1,0 +1,70 @@
+﻿@model Learn_Auth.Models.Booking
+@using System.Web.Mvc
+@{
+    ViewBag.Title = "Select Hotel and Room";
+    var hotels = ViewBag.Hotels as SelectList;
+}
+
+<div class="container my-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-gradient bg-success text-white py-4 rounded-top-4">
+            <h2 class="mb-0 text-center">
+                <i class="bi bi-building me-2"></i> Select a Hotel and Room
+            </h2>
+        </div>
+
+        <div class="card-body p-5">
+            @using (Html.BeginForm("RedirectToBooking", "Booking", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="mb-3">
+                    <label for="hotelDropdown" class="form-label fw-semibold">Select Hotel</label>
+                    @Html.DropDownList("SelectedHotelId", hotels, "Select a Hotel", new { @class = "form-control", id = "hotelDropdown" })
+                </div>
+
+                <div class="mb-3">
+                    <label for="roomDropdown" class="form-label fw-semibold">Select Room</label>
+                    <select id="roomDropdown" name="SelectedRoomId" class="form-control">
+                        <option value="">-- Select Room --</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg shadow-lg px-5">
+                    <i class="bi bi-check-circle-fill me-1"></i> Continue to Booking
+                </button>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // When hotel dropdown changes, fetch rooms via AJAX
+            $('#hotelDropdown').change(function () {
+                var hotelId = $(this).val();
+                if (hotelId) {
+                    $.ajax({
+                        url: '@Url.Action("GetRoomsByHotelId", "Booking")',
+                        type: 'GET',
+                        data: { hotelId: hotelId },
+                        success: function (data) {
+                            var $roomDropdown = $('#roomDropdown');
+                            $roomDropdown.empty();
+                            $roomDropdown.append('<option value="">-- Select Room --</option>');
+                            $.each(data, function (i, room) {
+                                $roomDropdown.append('<option value="' + room.RoomId + '">' + room.DisplayText + '</option>');
+                            });
+                        },
+                        error: function () {
+                            alert("An error occurred while fetching rooms.");
+                        }
+                    });
+                } else {
+                    $('#roomDropdown').empty().append('<option value="">-- Select Room --</option>');
+                }
+            });
+        });
+    </script>
+}

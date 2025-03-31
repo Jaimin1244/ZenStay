@@ -1,0 +1,151 @@
+﻿@model IEnumerable<Learn_Auth.Models.Hotel>
+@{
+    ViewBag.Title = "Hotels";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="section-title mb-4 text-center fw-bold">
+        <i class="bi bi-building"></i> Featured Hotels
+    </h2>
+
+    <!-- Search Section -->
+    <div class="bg-white p-4 rounded shadow mb-5">
+        <form action="@Url.Action("Index", "Hotel")" method="get">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" name="search" placeholder="Destination" />
+                </div>
+                <div class="col-md-3 position-relative">
+                    <input type="date" class="form-control disabled-feature" placeholder="Check-in" disabled />
+                    <div class="disabled-overlay"></div>
+                </div>
+                <div class="col-md-3 position-relative">
+                    <input type="date" class="form-control disabled-feature" placeholder="Check-out" disabled />
+                    <div class="disabled-overlay"></div>
+                </div>
+                <div class="col-md-2 position-relative">
+                    <input type="number" class="form-control disabled-feature" placeholder="Guests" disabled />
+                    <div class="disabled-overlay"></div>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </div>
+            <div id="featureAlert" class="alert alert-info mt-3 pulse-alert" role="alert" style="display: none;">
+                <i class="bi bi-info-circle-fill me-2"></i>This feature will be available soon.
+            </div>
+        </form>
+    </div>
+
+    <!-- Search Results Alert -->
+    @if (!string.IsNullOrEmpty(TempData["Search"] as string))
+    {
+        <div class="alert alert-info alert-dismissible fade show text-center" role="alert">
+            <i class="bi bi-search"></i> Showing results for "<strong>@TempData["Search"]</strong>"
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="window.location.href='@Url.Action("Index", "Hotel")'"></button>
+        </div>
+    }
+
+    <!-- Hotel Listing -->
+    <div class="row row-cols-1 row-cols-md-3 g-4 featured-hotels">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var hotel in Model)
+            {
+                <div class="col">
+                    <div class="card hotel-card shadow-sm hover-shadow">
+                        <div class="position-relative">
+                            @if (!string.IsNullOrEmpty(hotel.HotelImages))
+                            {
+                                <img src="@Url.Content(hotel.HotelImages)" class="card-img-top" alt="@hotel.HotelName" style="height:220px; object-fit:cover;">
+                            }
+                            else
+                            {
+                                <img src="~/images/default-hotel.jpg" class="card-img-top" alt="@hotel.HotelName" style="height:220px; object-fit:cover;">
+                            }
+                            @*<span class="badge bg-secondary position-absolute top-0 end-0 m-2">
+                                <i class="bi bi-star-fill text-warning"></i> 4.5
+                            </span>*@
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">@hotel.HotelName</h5>
+                            <p class="card-text text-muted"><i class="bi bi-geo-alt"></i> @hotel.City, @hotel.State</p>
+                            <p class="card-text"><i class="bi bi-phone"></i> @hotel.ContactInfo</p>
+                            <a href="@Url.Action("Details", "Hotel", new { id = hotel.HotelId })" class="btn btn-outline-primary w-100 mb-2">
+                                <i class="bi bi-info-circle"></i> Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center text-muted fade-in">
+                <i class="bi bi-x-circle fs-1"></i>
+                <p class="mt-2">No hotels found. Try another search.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    /* Pulse Animation */
+    @@keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.05);
+            opacity: 0.85;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    /* Alert with Pulse Effect */
+    #featureAlert {
+        animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    /* Disabled Feature Overlay */
+    .disabled-feature {
+        pointer-events: none;
+        background-color: #f5f5f5;
+    }
+
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        transition: 0.3s ease-in-out;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Badge for Rating */
+    .badge {
+        font-size: 0.85rem;
+    }
+
+    /* Empty State Fade Effect */
+    .fade-in {
+        animation: fadeIn 0.6s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+</style>

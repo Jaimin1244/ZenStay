@@ -1,0 +1,374 @@
+﻿@model Learn_Auth.Models.Booking
+
+@{
+    ViewBag.Title = "Booking";
+    var hotelName = Model.Room.Hotel.HotelName;
+}
+
+<div class="container my-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-gradient bg-success text-white py-4 rounded-top-4">
+            <h2 class="mb-0 text-center">
+                <i class="bi bi-plus-circle-fill me-2"></i> Booking at <strong><em>@hotelName</em></strong>
+            </h2>
+        </div>
+
+        <div class="card-body p-5">
+            @using (Html.BeginForm("Create", "Booking", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.RoomID) <!-- Room ID is hidden -->
+                @Html.HiddenFor(model => model.BookingStatus)
+
+                <div class="row g-4">
+                    <!-- Room No and Room Type -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold"><i class="bi bi-door-open-fill me-1"></i> Room No.</label>
+                        <input class="form-control bg-light" readonly value="@Model.Room.RoomNumber" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold"><i class="bi bi-building me-1"></i> Room Type</label>
+                        <input class="form-control bg-light" readonly value="@Model.Room.RoomType" />
+                    </div>
+
+                    <!-- Booking Period Full Width -->
+                    <div class="col-md-12">
+                        <label class="form-label fw-semibold"><i class="bi bi-calendar-range me-1"></i> Booking Period</label>
+                        <input type="text" id="checkInOut" class="form-control mb-3" placeholder="Select dates" required />
+                        <small class="text-danger d-none" id="dateError">Please select a valid booking period.</small>
+                        @*<small class="fs-6" id="numberOfDaysText">Select dates to calculate the duration.</small>*@
+                    </div>
+
+
+                    <!-- Hidden fields to store Check-In and Check-Out Dates -->
+                    @Html.HiddenFor(model => model.CheckInDate, new { id = "checkInDate" })
+                    @Html.HiddenFor(model => model.CheckOutDate, new { id = "checkOutDate" })
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold"><i class="bi bi-cash-coin me-1"></i> Price Per Night (<i class="bi bi-currency-rupee m-0"></i>)</label>
+                        <input class="form-control bg-light" readonly value="@Model.Room.Price" />
+                    </div>
+
+                    <!-- Total Amount Display -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold"><i class="bi bi-calculator me-1"></i> Total Amount (<i class="bi bi-currency-rupee m-0"></i>)</label>
+                        <input id="totalAmount" class="form-control bg-light" readonly />
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex justify-content-between mt-5">
+                        <button type="submit" class="btn btn-success btn-lg shadow-lg px-5">
+                            <i class="bi bi-check-circle-fill me-1"></i> Confirm Booking
+                        </button>
+                        <a href="@Url.Action("Index", "Room")" class="btn btn-outline-secondary btn-lg px-5">
+                            <i class="bi bi-x-circle-fill me-1"></i> Cancel
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Updated JavaScript -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // ---- Form Validation for Required Booking Period ----
+        var bookingForm = document.getElementById("bookingForm");
+        var checkInOutInput = document.getElementById("checkInOut");
+        var dateError = document.getElementById("dateError");
+
+        bookingForm.addEventListener("submit", function (event) {
+            if (!checkInOutInput.value.trim()) {
+                event.preventDefault(); // Stop form submission
+                dateError.classList.remove("d-none"); // Show error message
+            } else {
+                dateError.classList.add("d-none"); // Hide error if valid
+            }
+        });
+
+        // ---- Force refresh when navigating back from cache ----
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                location.reload(); // Force refresh if page is loaded from cache
+            }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // ---- Variables & DOM References ----
+        var pricePerNight = @Model.Room.Price;
+        var totalAmountField = document.getElementById("totalAmount");
+        var numberOfDaysText = document.getElementById("numberOfDaysText");
+        var confirmBookingButton = document.querySelector("button[type='submit']");
+        var bookedDates = []; // Array to store booked dates
+        var roomId = @Model.RoomID; // Room ID passed from Model
+        var flatpickrTouched = false;
+        confirmBookingButton.disabled = true;
+
+        // ---- Fetch Booked Dates from API ----
+        $.ajax({
+            url: '/Booking/GetBookedDates?roomId=' + roomId,
+            type: 'GET',
+            success: function (data) {
+                // Process and mark booked dates
+                data.forEach(function (booking) {
+                    var start = new Date(parseInt(booking.StartDate.replace(/\/Date\((\d+)\)\//, '$1')));
+                    var end = new Date(parseInt(booking.EndDate.replace(/\/Date\((\d+)\)\//, '$1')));
+
+                    // Push all dates between check-in and check-out
+                    while (start <= end) {
+                        bookedDates.push(start.toISOString().split('T')[0]);
+                        start.setDate(start.getDate() + 1);
+                    }
+                });
+                // Debug log:
+                console.log("Booked Dates:", bookedDates);
+
+                // Initialize Flatpickr AFTER fetching booked dates
+                initializeFlatpickr(bookedDates);
+            },
+            error: function () {
+                console.error("Error fetching booked dates.");
+            }
+        });
+
+        // ---- Function to Initialize Flatpickr with Booked Dates ----
+        function initializeFlatpickr(bookedDates) {
+            flatpickr("#checkInOut", {
+                mode: "range",
+                dateFormat: "Y-m-d",
+                minDate: "today",
+                showMonths: 2, // Display 2 months side by side
+                inline: false,
+                disable: bookedDates.map(date => {
+                    return {
+                        from: date,
+                        to: date
+                    };
+                }),
+                onDayCreate: function (dObj, dStr, fp, dayElem) {
+                    if (bookedDates.includes(dayElem.dateObj.toISOString().split('T')[0])) {
+                        dayElem.style.backgroundColor = "#ffb3b3"; // Light red for booked dates
+                        dayElem.style.color = "#fff";
+                        dayElem.classList.add("flatpickr-disabled");
+                    }
+                },
+                onOpen: function (selectedDates, dateStr, instance) {
+                    // Create a custom header inside Flatpickr if it doesn't exist
+                    let calendarContainer = instance.calendarContainer;
+                    if (!calendarContainer.querySelector(".flatpickr-header")) {
+                        let header = document.createElement("div");
+                        header.className = "flatpickr-header text-center p-2 m-2";
+                        header.innerHTML = `
+                            <div class="flatpickr-header-content d-flex justify-content-between align-items-center p-3 bg-light rounded shadow-sm">
+                                <div class="d-flex gap-4">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-calendar-check text-primary"></i>
+                                        <span id="fpCheckIn" class="fw-medium">Check-In: --</span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-house-door text-danger"></i>
+                                        <span id="fpCheckOut" class="fw-medium">Check-Out: --</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 text-success fw-semibold">
+                                    <i class="bi bi-moon-stars"></i>
+                                    <span id="fpStayDuration">Stay: -- night(s)</span>
+                                </div>
+                            </div>
+                            <hr>
+                        `;
+                        calendarContainer.insertBefore(header, calendarContainer.firstChild);
+                    }
+                },
+                onClose: function (selectedDates) {
+                    if (selectedDates.length === 2) {
+                        var checkInDate = selectedDates[0];
+                        var checkOutDate = selectedDates[1];
+                        var numOfDays = Math.floor((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+
+                        if (selectedDates.length === 2) {
+                            flatpickrTouched = true; // Mark Flatpickr as touched
+                            confirmBookingButton.disabled = false; // Enable button after selecting dates
+                        } else {
+                            confirmBookingButton.disabled = true; // Keep button disabled if selection is invalid
+                        }
+
+                        if (numOfDays > 0) {
+                            var totalAmount = numOfDays * pricePerNight;
+                            totalAmountField.value = totalAmount.toFixed(2);
+                            document.getElementById("checkInDate").value = checkInDate.toISOString();
+                            document.getElementById("checkOutDate").value = checkOutDate.toISOString();
+
+                            // Update Flatpickr header dynamically
+                            document.getElementById("fpCheckIn").innerHTML = `Check-In: ${checkInDate.toLocaleDateString()}`;
+                            document.getElementById("fpCheckOut").innerHTML = `Check-Out: ${checkOutDate.toLocaleDateString()}`;
+                            document.getElementById("fpStayDuration").innerHTML = `Stay: <strong>${numOfDays}</strong> night(s)`;
+
+                            // Call availability check after selecting dates
+                            checkAvailability();
+                        } else {
+                            totalAmountField.value = "0.00";
+                            numberOfDaysText.innerHTML = "Invalid date selection. Try again.";
+                        }
+                    }
+                }
+            });
+        }
+
+        // ---- Function to Check Room Availability ----
+        function checkAvailability() {
+            var checkInDateValue = document.getElementById("checkInDate").value;
+            var checkOutDateValue = document.getElementById("checkOutDate").value;
+
+            if (!checkInDateValue || !checkOutDateValue) {
+                toastr.warning("Please select check-in and check-out dates.");
+                return;
+            }
+
+            // AJAX request to check availability
+            $.ajax({
+                url: '@Url.Action("CheckRoomAvailability", "Booking")',
+                type: 'GET',
+                data: {
+                    roomId: roomId,
+                    desiredCheckIn: checkInDateValue,
+                    desiredCheckOut: checkOutDateValue
+                },
+                success: function (isAvailable) {
+                    if (isAvailable == true) {
+                        toastr.success("Room is available!", "Success");
+                        confirmBookingButton.disabled = false;
+                    } else {
+                        toastr.error("Room is NOT available. Please select different dates.", "Unavailable");
+                        confirmBookingButton.disabled = true;
+                    }
+                },
+                error: function () {
+                    toastr.error("Error checking availability. Please try again.", "Error");
+                }
+            });
+        }
+
+        // ---- Initialize total amount on page load ----
+        totalAmountField.value = pricePerNight.toFixed(2);
+
+        var bookingForm = document.querySelector("form");
+        bookingForm.addEventListener("submit", function (event) {
+            if (!flatpickrTouched) {
+                event.preventDefault(); // Stop form submission
+                toastr.warning("Please select your booking dates before confirming.");
+            }
+        });
+    });
+</script>
+
+
+
+
+<!-- Updated CSS -->
+<style>
+    #checkInOut {
+        width: 100%;
+        font-size: 1.2rem;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .flatpickr-calendar {
+        font-size: 1.1rem;
+    }
+
+    .flatpickr-day {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+    }
+
+        .flatpickr-day.selected,
+        .flatpickr-day.startRange,
+        .flatpickr-day.endRange {
+            background-color: #28a745;
+            color: #fff;
+            border-radius: 8px;
+        }
+
+    /* Container and Card Styling */
+    /*.container {
+        max-width: 900px;
+    }*/
+
+    .card {
+        background-color: #fff;
+        border-radius: 12px;
+    }
+
+    .card-header {
+        background: linear-gradient(to right, #28a745, #218838);
+        box-shadow: 0 4px 8px rgba(0, 128, 0, 0.3);
+    }
+
+    /* Input Styling */
+    .form-control {
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        padding: 12px;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .form-control:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 8px rgba(40, 167, 69, 0.2);
+        }
+
+    /* Button Effects */
+    .btn-lg {
+        padding: 12px 30px;
+        border-radius: 8px;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border: none;
+        transition: transform 0.2s ease;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3);
+        }
+
+    .btn-outline-secondary {
+        border: 2px solid #6c757d;
+        transition: background-color 0.2s ease;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+    /* Icon Styling */
+    .bi {
+        vertical-align: -0.2em;
+        margin-right: 5px;
+    }
+
+    /* Media Query for Mobile Devices */
+    @@ media (max-width: 768px) {
+        .btn-lg {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .d-flex {
+            flex-direction: column;
+        }
+    }
+</style>

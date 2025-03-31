@@ -1,0 +1,81 @@
+﻿@model Learn_Auth.ViewModel.LoginViewModel
+
+@{
+    ViewBag.Title = "Login";
+    string returnUrl = ViewBag.ReturnUrl ?? Request.UrlReferrer?.ToString(); // Get previous page URL
+}
+
+<div class="container mt-5" style="height : 80vh">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card login-card shadow border-0">
+                <div class="card-header bg-zenstay text-white text-center py-3">
+                    <h2 class="h4 mb-0"><i class="bi bi-box-arrow-in-right"></i> Login</h2>
+                </div>
+
+                <div class="card-body">
+                    @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { id = "loginForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <!-- Hidden input for Return URL -->
+                        <input type="hidden" id="returnUrl" name="returnUrl" value="@returnUrl" />
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-zenstay"><i class="bi bi-envelope-fill"></i></span>
+                                @Html.TextBoxFor(m => m.Email, new
+                                {
+                                    @class = "form-control",
+                                    type = "email",
+                                    id = "email",
+                                    required = "required",
+                                    placeholder = "Enter your email"
+                                })
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-zenstay"><i class="bi bi-lock-fill"></i></span>
+                                @Html.PasswordFor(m => m.Password, new
+                                {
+                                    @class = "form-control",
+                                    id = "password",
+                                    required = "required",
+                                    placeholder = "Enter your password"
+                                })
+                                <button type="button" class="btn toggle-password btn-zenstay" data-target="password"  tabindex="-1">
+                                    <i class="bi bi-eye text-light"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="form-check">
+                                @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input", id = "rememberMe" })
+                                <label class="form-check-label" for="rememberMe">Remember Me</label>
+                            </div>
+                            <a href="@Url.Action("ForgotPassword", "Account")" class="text-decoration-none">Forgot Password?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-zenstay w-100" id="loginBtn">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </button>
+
+                        <div class="text-center mt-3">
+                            <p class="mb-0">
+                                Don't have an account?
+                                <a href="@Url.Action("Register", "Account")" class="text-decoration-none">Register here</a>
+                            </p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/customScript.js"></script>

@@ -1,0 +1,184 @@
+﻿@model Learn_Auth.Models.Hotel
+
+@{
+    ViewBag.Title = "Create Hotel";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <!-- Increase column width to support two-column layout -->
+        <div class="col-md-8 col-lg-8">
+            <!-- Card -->
+            <div class="card register-card shadow border-0 rounded-3">
+                <!-- Card Header -->
+                <div class="card-header bg-zenstay text-white text-center py-3">
+                    <h2 class="h4 mb-0">
+                        <i class="bi bi-building"></i> Create New Hotel
+                    </h2>
+                    <p class="mb-0 small">Enter the hotel details below</p>
+                </div>
+
+                <!-- Card Body -->
+                <div class="card-body p-4">
+                    @using (Html.BeginForm("Create", "Hotel", FormMethod.Post, new { id = "hotelCreateForm", enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <!-- Row 1: Hotel Name & Address -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!-- Hotel Name -->
+                                <div class="mb-3">
+                                    <label class="form-label" for="hotelName">Hotel Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-building"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.HotelName, new { @class = "form-control", required = "required", id = "hotelName", placeholder = "Enter hotel name" })
+                                    </div>
+                                    <span class="text-danger" id="hotelNameError"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <!-- Address -->
+                                <div class="mb-3">
+                                    <label class="form-label" for="address">Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-geo-alt-fill"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.Address, new { @class = "form-control", required = "required", id = "address", placeholder = "Enter address" })
+                                    </div>
+                                    <span class="text-danger" id="addressError"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: City & State -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!-- City -->
+                                <div class="mb-3">
+                                    <label class="form-label" for="city">City</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-building"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.City, new { @class = "form-control", required = "required", id = "city", placeholder = "Enter city" })
+                                    </div>
+                                    <span class="text-danger" id="cityError"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <!-- State -->
+                                <div class="mb-3">
+                                    <label class="form-label" for="state">State</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-map"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.State, new { @class = "form-control", required = "required", id = "state", placeholder = "Enter state" })
+                                    </div>
+                                    <span class="text-danger" id="stateError"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Country & Zip Code -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!-- Country -->
+                                <div class="mb-3">
+                                    <label class="form-label" for="country">Country</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-globe"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.Country, new { @class = "form-control", required = "required", id = "country", placeholder = "Enter country" })
+                                    </div>
+                                    <span class="text-danger" id="countryError"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <!-- Zip Code -->
+                                <div class="mb-3">
+                                    <label class="form-label" for="zipCode">Zip Code</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-mailbox2"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.ZipCode, new { @class = "form-control", required = "required", id = "zipCode", placeholder = "Enter zip code" })
+                                    </div>
+                                    <span class="text-danger" id="zipCodeError"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 4: Full-Width Description -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- Description -->
+                                <div class="mb-3">
+                                    <label class="form-label" for="description">Description</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-card-text"></i>
+                                        </span>
+                                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", required = "required", id = "description", placeholder = "Enter description", rows = "4" })
+                                    </div>
+                                    <span class="text-danger" id="descriptionError"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 5: Contact Info & Hotel Image -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!-- Contact Info -->
+                                <div class="mb-3">
+                                    <label class="form-label" for="contactInfo">Contact Information</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-telephone-fill"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.ContactInfo, new { @class = "form-control", required = "required", id = "contactInfo", placeholder = "Enter contact information" })
+                                    </div>
+                                    <span class="text-danger" id="contactInfoError"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <!-- Hotel Image -->
+                                <div class="mb-3">
+                                    <label class="form-label" for="hotelImage">Hotel Image</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-image"></i>
+                                        </span>
+                                        <input type="file" name="HotelImage" id="hotelImage" class="form-control" accept="image/*" />
+                                    </div>
+                                    <span class="text-danger" id="hotelImageError"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 6: Create Button -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-zenstay w-100" id="createHotelBtn">
+                                    <i class="bi bi-check-circle-fill"></i> Create Hotel
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Row 7: Back to Hotel List Link -->
+                        <div class="row">
+                            <div class="col-md-12 text-center mt-3">
+                                <a href="@Url.Action("Dashboard", "Owner")" class="text-decoration-none">Back to Dashboard</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

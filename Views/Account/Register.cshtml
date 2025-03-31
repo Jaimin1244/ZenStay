@@ -1,0 +1,139 @@
+﻿@model Learn_Auth.ViewModel.RegisterViewModel
+
+@{
+    ViewBag.Title = "Register";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <!-- Card -->
+            <div class="card shadow border-0 rounded-3">
+                <!-- Card Header -->
+                <div class="card-header bg-zenstay text-white text-center py-3">
+                    <h2 class="h4 mb-0">
+                        <i class="bi bi-person-plus-fill"></i> Create Your Account
+                    </h2>
+                    <p class="mb-0 small">Fill in your details below to get started</p>
+                </div>
+
+                <!-- Card Body -->
+                <div class="card-body p-4">
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { id = "registerForm", data_register_url = Url.Action("Register", "Account") }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <!-- Username -->
+                        <div class="mb-3">
+                            <label class="form-label" for="userName">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-zenstay">
+                                    <i class="bi bi-person-fill"></i>
+                                </span>
+                                @Html.TextBoxFor(m => m.UserName, new
+                                {
+                                    @class = "form-control",
+                                    required = "required",
+                                    id = "userName",
+                                    placeholder = "Choose a username"
+                                })
+                            </div>
+                            <span class="text-danger" id="userNameError"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label" for="emailField">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-zenstay">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </span>
+                                @Html.TextBoxFor(m => m.Email, new
+                                {
+                                    @class = "form-control",
+                                    type = "email",
+                                    required = "required",
+                                    id = "emailField",
+                                    placeholder = "Enter your email"
+                                })
+                            </div>
+                            <span class="text-danger" id="emailError"></span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label class="form-label" for="password">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-zenstay">
+                                    <i class="bi bi-lock-fill"></i>
+                                </span>
+                                @Html.PasswordFor(m => m.Password, new
+                                {
+                                    @class = "form-control",
+                                    id = "password",
+                                    required = "required",
+                                    placeholder = "Create a secure password"
+                                })
+                                <button type="button"
+                                        class="btn btn-zenstay toggle-password"
+                                        data-target="password"
+                                        tabindex="-1">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <span class="text-danger" id="passwordError"></span>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="mb-3">
+                            <label class="form-label" for="confirmPassword">Confirm Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-zenstay">
+                                    <i class="bi bi-lock-fill"></i>
+                                </span>
+                                @Html.PasswordFor(m => m.ConfirmPassword, new
+                                {
+                                    @class = "form-control",
+                                    id = "confirmPassword",
+                                    required = "required",
+                                    placeholder = "Re-enter your password"
+                                })
+                                <button type="button"
+                                        class="btn btn-zenstay toggle-password"
+                                        data-target="confirmPassword"
+                                        tabindex="-1">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Is Owner Checkbox -->
+                        <div class="mb-3 form-check d-flex justify-content-center">
+                            @Html.CheckBoxFor(m => m.isOwner, new { @class = "form-check-input", id = "isOwnerCheckbox" })
+                            <label class="form-check-label" for="isOwnerCheckbox">
+                                &nbsp; Register as Owner
+                            </label>
+                        </div>
+
+                        <!-- Password Mismatch Error -->
+                        <div id="passwordMismatchMessage" class="alert alert-danger" style="display:none;"></div>
+
+                        <!-- Register Button -->
+                        <button type="submit" class="btn btn-zenstay w-100" id="registerBtn">
+                            <i class="bi bi-person-check-fill"></i> Register
+                        </button>
+
+                        <!-- Login Link -->
+                        <div class="text-center mt-3">
+                            <p class="mb-0">
+                                Already have an account?
+                                <a href="@Url.Action("Login", "Account")" class="text-decoration-none">Login here</a>
+                            </p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/registerScript.js"></script>

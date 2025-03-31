@@ -1,0 +1,109 @@
+﻿@model Learn_Auth.Models.Room
+
+<div class="modal-header bg-gradient bg-warning text-white">
+    <h5 class="modal-title" id="roomModalLabel">
+        <i class="bi bi-pencil-square"></i> Edit Room
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+@using (Html.BeginForm("Edit", "Room", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.RoomId) <!-- Store Room ID -->
+    @Html.HiddenFor(model => model.RoomImage) <!-- Store Old Image Path -->
+
+    <div class="modal-body">
+        <div class="row g-2">
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Room Number</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                    @Html.TextBoxFor(model => model.RoomNumber, new { @class = "form-control", placeholder = "Enter Room Number", required = "required" })
+                </div>
+                @Html.ValidationMessageFor(model => model.RoomNumber, "", new { @class = "text-danger small" })
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Room Type</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-tag-fill"></i></span>
+                    @Html.TextBoxFor(model => model.RoomType, new { @class = "form-control", placeholder = "Enter Room Type", required = "required" })
+                </div>
+                @Html.ValidationMessageFor(model => model.RoomType, "", new { @class = "text-danger small" })
+            </div>
+        </div>
+
+        <div class="row g-2 mt-2">
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Price</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-currency-rupee"></i></span>
+                    @Html.TextBoxFor(model => model.Price, new { @class = "form-control", placeholder = "Enter Price", required = "required", type = "number", min = "0" })
+                </div>
+                @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger small" })
+            </div>
+            <div class="col-md-6 d-flex align-items-center">
+                <div class="form-check form-switch mt-4">
+                    @Html.CheckBoxFor(model => model.IsAvailable, new { @class = "form-check-input", role = "switch", id = "isAvailableSwitch" })
+                    <label for="isAvailableSwitch" class="form-check-label ms-2 fw-bold">Available</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <label class="form-label fw-bold">Amenities</label>
+            @Html.TextAreaFor(model => model.Amenities, new { @class = "form-control", placeholder = "Enter amenities (comma separated)", rows = "2", required = "required" })
+            @Html.ValidationMessageFor(model => model.Amenities, "", new { @class = "text-danger small" })
+        </div>
+
+        <div class="row g-3 mt-3 align-items-center">
+            <!-- Left side (Room Image Upload & Hotel Dropdown) -->
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Room Image</label>
+                <input type="file" name="RoomImageFile" class="form-control" id="roomImageUpload" />
+                @Html.ValidationMessageFor(model => model.RoomImageFile, "", new { @class = "text-danger small" })
+
+            <div class="mt-3">
+                <label class="form-label fw-bold">Hotel</label>
+                @Html.DropDownList("HotelId", null, "Select Hotel", new { @class = "form-select", required = "required", id = "HotelId" })
+                @Html.ValidationMessageFor(model => model.HotelId, "", new { @class = "text-danger small" })
+            </div>
+            </div>
+
+            <!-- Right side (Room Image Preview) -->
+            <div class="col-md-6 d-flex justify-content-center align-items-center mb-3">
+                <div class="text-center">
+                    <img id="roomImagePreview"
+                         src="@(Model.RoomImage != null ? Url.Content(Model.RoomImage) : "https://via.placeholder.com/200?text=Room+Image")"
+                         alt="Room Image Preview"
+                         class="img-thumbnail"
+                         style="max-width: 200px; max-height: 200px;" />
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-outline-warning">
+                <i class="bi bi-save"></i> Update Room
+            </button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                <i class="bi bi-x-lg"></i> Cancel
+            </button>
+        </div>
+    </div>
+}
+
+<script>
+    document.getElementById('roomImageUpload').addEventListener('change', function (event) {
+        const preview = document.getElementById('roomImagePreview');
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>

@@ -1,0 +1,221 @@
+﻿@model Learn_Auth.Models.Hotel
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar (20%) -->
+        <div class="col-lg-2 col-sm-12 sidebar rounded p-3 d-none d-sm-none d-lg-block" id="sidebar">
+            <h4 class="fw-bold text-dark">Hotels</h4>
+
+            <!-- Filters -->
+            <div class="filters">
+                <!-- Country Filter -->
+                <select id="countryFilter" class="form-control mb-2">
+                    <option value="">All Countries</option>
+                    @foreach (var country in ViewBag.Countries)
+                    {
+                        <option value="@country">@country</option>
+                    }
+                </select>
+
+                <!-- Location (City) Filter -->
+                <select id="locationFilter" class="form-control mb-2">
+                    <option value="">All Cities</option>
+                    @foreach (var loc in ViewBag.Location)
+                    {
+                        <option value="@loc">@loc</option>
+                    }
+                </select>
+            </div>
+            <!-- Hotel List (Scrollable Section) -->
+            <div class="hotel-list">
+                <ul class="list-group">
+                    @foreach (var h in ViewBag.AllHotels as List<Learn_Auth.Models.Hotel>)
+                    {
+                        <li class="list-group-item hotel-item"
+                            data-name="@h.HotelName.ToLower()"
+                            data-country="@h.Country.ToLower()"
+                            data-location="@h.City.ToLower()"
+                            data-id="@h.HotelId"
+                            style="background-image: url('@Url.Content(h.HotelImages?.Split(',')[0] ?? "~/Content/Images/no-image.jpg")');">
+                            <div class="overlay">
+                                <span class="hotel-name">@h.HotelName</span>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <!-- Hotel Details (80%) -->
+        <div class="col-md-10 p-4" id="hotelDetailsContainer">
+            @Html.Partial("_HotelDetailsPartial", Model)
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Sidebar Styling */
+    .sidebar {
+        background: transparent; /* Dark green gradient */
+        min-height: 100vh; /* Full height */
+        height: 100vh;
+        overflow: hidden; /* Prevents full overflow */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding-bottom: 10px;
+    }
+
+    /* Search Bar */
+    #hotelSearch {
+        border-radius: 8px;
+    }
+
+    /* Scrollable Hotel List */
+    .hotel-list {
+        flex-grow: 1;
+        overflow-y: auto;
+        max-height: calc(100vh - 120px); /* Limit height to prevent full page overflow */
+        padding-right: 5px;
+        overflow-x: hidden;
+        white-space: nowrap;
+    }
+
+        /* Custom Scrollbar */
+        .hotel-list::-webkit-scrollbar {
+            width: 6px;
+            color: black;
+        }
+        /* Scrollbar Handle */
+        .hotel-list::-webkit-scrollbar-thumb {
+            background-color: #555555; /* Change scrollbar color */
+            border-radius: 10px; /* Rounded corners */
+        }
+
+        /* Scrollbar Track (Behind the thumb) */
+        .hotel-list::-webkit-scrollbar-track {
+            border-radius : 5px;
+            background-color: rgba(0,0,0,0.15); /* Light background */
+        }
+
+        /* On Hover */
+        .hotel-list::-webkit-scrollbar-thumb:hover {
+            background-color: #444444; /* Change color on hover */
+        }
+
+    /* Hotel List Item */
+    .list-group-item {
+        position: relative;
+        background-size: cover;
+        background-position: center;
+        height: 80px;
+        border: none;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out;
+    }
+
+        /* Overlay Effect */
+        .list-group-item .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Hover Effect */
+        .list-group-item:hover {
+            transform: scale(1.05);
+        }
+
+        @@media (max-width: 576px) { /* For screens smaller than 576px */
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 80%;
+                height: 100vh;
+                background: white;
+                z-index: 1200;
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+                transform: translateX(0);
+                transition: transform 0.3s ease-in-out;
+                overflow-y: auto;
+            }
+    
+    .sidebar.show {
+        transform: translateX(0);
+    }
+}
+
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(".hotel-item").click(function () {
+                var hotelId = $(this).data("id");
+                $.ajax({
+                    url: "/Hotel/Details/" + hotelId,
+                    type: "GET",
+                    success: function (response) {
+                        $("#hotelDetailsContainer").html(response);
+                    },
+                    error: function () {
+                        alert("Error loading hotel details.");
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            //// Search hotels by name
+            //$("#hotelSearch").on("keyup", function () {
+            //    var searchValue = $(this).val().toLowerCase();
+            //    $(".hotel-item").each(function () {
+            //        var hotelName = $(this).data("name");
+            //        $(this).toggle(hotelName.includes(searchValue));
+            //    });
+            //});
+
+            // Filter hotels by location
+           $("#countryFilter, #locationFilter").on("change", function () {
+        var selectedCountry = $("#countryFilter").val().toLowerCase();
+        var selectedLocation = $("#locationFilter").val().toLowerCase();
+
+        $(".hotel-item").each(function () {
+            var hotelCountry = $(this).data("country");
+            var hotelLocation = $(this).data("location");
+
+            var matchesCountry = (selectedCountry === "" || hotelCountry === selectedCountry);
+            var matchesLocation = (selectedLocation === "" || hotelLocation === selectedLocation);
+
+            // Show item only if it matches both filters
+            $(this).toggle(matchesCountry && matchesLocation);
+        });
+    });
+        });
+    </script>
+    <script>
+        document.getElementById('sidebar').addEventListener('click', function () {
+            let sidebar = document.getElementById('sidebar');
+
+            if (window.innerWidth < 992) {  // Only for small screens
+                sidebar.classList.toggle('d-none');
+                sidebar.classList.toggle('d-sm-block'); // Show on small screens when toggled
+            }
+        });
+
+
+    </script>
+
+
+}

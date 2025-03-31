@@ -1,0 +1,68 @@
+﻿@model Learn_Auth.Models.Invoice
+@{
+    ViewBag.Title = "Invoice Details";
+}
+<div class="container mt-4">
+    <h2><i class="bi bi-receipt"></i> Invoice Details</h2>
+
+    <!-- Invoice Summary Card -->
+    <div class="card shadow-lg mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Invoice #@Model.InvoiceID</h5>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p class="card-text"><strong>Customer:</strong> @Model.CustomerName</p>
+                    <p class="card-text"><strong>Address:</strong> @Model.CustomerAddress</p>
+                    <p class="card-text"><strong>Hotel:</strong> @Model.HotelName</p>
+                    <p class="card-text"><strong>Room Number:</strong> @Model.RoomNo</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="card-text"><strong>Invoice Date:</strong> @Model.InvoiceDate.ToString("dd-MMM-yyyy HH:mm:ss")</p>
+                    @*<p class="card-text"><strong>Payment Method:</strong> @(Model.Booki ?? "N/A")</p>*@
+                    <p class="card-text">
+                        <strong>Payment Status:</strong>
+                        <span class="badge bg-success)">
+                            Completed
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Payment Details Section -->
+            <h5 class="border-top pt-3">Payment Summary</h5>
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Price</th>
+                        <th>Total Amount</th>
+                        <th>Tax</th>
+                        <th>Discount</th>
+                        <th>Final Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><i class="bi bi-currency-rupee"></i>@Model.Price.ToString("N2")</td>
+                        <td><i class="bi bi-currency-rupee"></i>@Model.TotalAmount.ToString("N2")</td>
+                        <td><i class="bi bi-currency-rupee"></i>@Model.Tax.ToString("N2")</td>
+                        <td><i class="bi bi-currency-rupee"></i>@Model.Discounts.ToString("N2")</td>
+                        <td><strong><i class="bi bi-currency-rupee"></i>@Model.FinalAmount.ToString("N2")</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="mt-3">
+        <a href="@Url.Action("UserBookings", "Booking")" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+            <a href="@Url.Action("DownloadInvoice", "Invoice", new { id = Model.InvoiceID })"
+               class="btn btn-success ms-2">
+                <i class="bi bi-printer"></i> Download Invoice
+            </a>
+    </div>
+</div>

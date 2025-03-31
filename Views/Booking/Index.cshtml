@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Learn_Auth.Models.Booking>
+
+@{
+    ViewBag.Title = "All Bookings";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-journal-bookmark-fill"></i> All Bookings</h2>
+        <a href="@Url.Action("Create")" class="btn btn-success"><i class="bi bi-plus-lg"></i> Add Booking</a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Room</th>
+                    <th scope="col">Check-In</th>
+                    <th scope="col">Check-Out</th>
+                    <th scope="col">Booking Date</th>
+                    <th scope="col" class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var booking in Model)
+                {
+                    <tr>
+                        <td>@booking.BookingID</td>
+                        <td>@booking.RoomID</td>
+                        <td>@booking.CheckInDate.ToString("dd MMM yyyy")</td>
+                        <td>@booking.CheckOutDate.ToString("dd MMM yyyy")</td>
+                        <td>@booking.BookingDate.ToString("dd MMM yyyy")</td>
+                        <td class="text-center">
+                            <a href="@Url.Action("Details", new { id = booking.BookingID })" class="btn btn-sm btn-info" title="View Details">
+                                <i class="bi bi-eye"></i>Details
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

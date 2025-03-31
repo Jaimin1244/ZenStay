@@ -1,0 +1,217 @@
+﻿@model Learn_Auth.Models.Hotel
+
+@{
+    ViewBag.Title = "Edit Hotel";
+    string returnUrl = ViewBag.ReturnUrl ?? Request.UrlReferrer?.ToString(); // Get previous page URL
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-8">
+            <div class="card register-card shadow border-0 rounded-3">
+                <div class="card-header bg-zenstay text-white text-center py-3">
+                    <h2 class="h4 mb-0">
+                        <i class="bi bi-pencil-square"></i> Edit "@Model.HotelName"
+                    </h2>
+                    <p class="mb-0 small">Modify the hotel details below</p>
+                </div>
+
+                <div class="card-body p-4">
+                    @using (Html.BeginForm("Edit", "Hotel", FormMethod.Post, new { id = "hotelEditForm", enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.HotelId)
+                        <input type="hidden" id="returnUrl" name="returnUrl" value="@returnUrl" />
+
+                        <!-- Hotel Image Upload (At the Top) -->
+                        <div class="text-center mb-3">
+                            <label for="HotelImageUpload" class="image-upload-label">
+                                <div class="position-relative d-inline-block">
+                                    <img id="hotelPreview" src="@Url.Content(Model.HotelImages ?? "~/default-hotel.jpg")"
+                                         alt="Hotel Image" class="img-thumbnail img-hover" style="max-height: 200px; cursor: pointer;">
+                                    <div class="overlay-text">Click to change image</div>
+                                </div>
+                            </label>
+                            <input type="file" name="HotelImage" id="HotelImageUpload" class="d-none" accept="image/*">
+                        </div>
+
+                        <!-- Form Fields -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label" for="hotelName">Hotel Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-building"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.HotelName, new { @class = "form-control", required = "required", id = "hotelName", placeholder = "Enter hotel name" })
+                                    </div>
+                                    <span class="text-danger" id="hotelNameError"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label" for="address">Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-geo-alt-fill"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.Address, new { @class = "form-control", required = "required", id = "address", placeholder = "Enter address" })
+                                    </div>
+                                    <span class="text-danger" id="addressError"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label" for="city">City</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-building"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.City, new { @class = "form-control", required = "required", id = "city", placeholder = "Enter city" })
+                                    </div>
+                                    <span class="text-danger" id="cityError"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label" for="state">State</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-map"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.State, new { @class = "form-control", required = "required", id = "state", placeholder = "Enter state" })
+                                    </div>
+                                    <span class="text-danger" id="stateError"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label" for="country">Country</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-globe"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.Country, new { @class = "form-control", required = "required", id = "country", placeholder = "Enter country" })
+                                    </div>
+                                    <span class="text-danger" id="countryError"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label" for="zipCode">Zip Code</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-mailbox2"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.ZipCode, new { @class = "form-control", required = "required", id = "zipCode", placeholder = "Enter zip code" })
+                                    </div>
+                                    <span class="text-danger" id="zipCodeError"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label" for="contactInfo">Contact Information</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-telephone-fill"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.ContactInfo, new { @class = "form-control", required = "required", id = "contactInfo", placeholder = "Enter contact information" })
+                                    </div>
+                                    <span class="text-danger" id="contactInfoError"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label" for="description">Description</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-card-text"></i>
+                                        </span>
+                                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", required = "required", id = "description", placeholder = "Enter description", rows = "4" })
+                                    </div>
+                                    <span class="text-danger" id="descriptionError"></span>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="@Url.Action("Index", "Hotel")" class="btn btn-secondary w-100">
+                                    <i class="bi bi-arrow-left-circle"></i> Back to List
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-zenstay w-100">
+                                    <i class="bi bi-check-circle"></i>Update Hotel
+                                </button>
+                            </div>
+                        </div>
+
+
+                    }
+                </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+        // Handle image click to open file input
+        $("#hotelPreview").click(function () {
+            $("#HotelImageUpload").click();
+        });
+
+        // Preview selected image
+        $("#HotelImageUpload").change(function () {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $("#hotelPreview").attr("src", e.target.result);
+            };
+            reader.readAsDataURL(this.files[0]);
+        });
+
+    </script>
+
+    <style>
+        .img-hover {
+            transition: opacity 0.3s ease-in-out;
+        }
+
+            .img-hover:hover {
+                opacity: 0.7;
+            }
+
+        .overlay-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .position-relative:hover .overlay-text {
+            display: block;
+        }
+    </style>
+}

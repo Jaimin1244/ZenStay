@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Learn_Auth.Models.Invoice>
+@{
+    ViewBag.Title = "Invoices";
+}
+<div class="container mt-4">
+    <h2 class="mb-3"><i class="bi bi-file-earmark-text"></i> Invoice List</h2>
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Invoice ID</th>
+                <th>Customer</th>
+                <th>Hotel</th>
+                <th>Amount</th>
+                <th>Invoice Date</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var invoice in Model)
+            {
+                <tr>
+                    <td>@invoice.InvoiceID</td>
+                    <td>@invoice.CustomerName</td>
+                    <td>@invoice.HotelName</td>
+                    <td>@invoice.Price.ToString("C")</td>
+                    <td>@invoice.InvoiceDate.ToShortDateString()</td>
+                    <td class="text-center">
+                        <a href="@Url.Action("Details", new { id = invoice.InvoiceID })" class="btn btn-info btn-sm">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="@Url.Action("DownloadInvoice", new { id = invoice.InvoiceID })" class="btn btn-primary btn-sm ms-2">
+                            <i class="bi bi-download"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,191 @@
+﻿@model Learn_Auth.ViewModel.ProfileViewModel
+
+@{
+    ViewBag.Title = "Edit Profile";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-8">
+            <div class="card register-card shadow border-0 rounded-3">
+                <div class="card-header bg-zenstay text-white text-center py-3">
+                    <h2 class="h4 mb-0">
+                        <i class="bi bi-pencil-square"></i> Edit Profile
+                    </h2>
+                    <p class="mb-0 small">Update your personal details below</p>
+                </div>
+
+                <div class="card-body p-4">
+                    @using (Html.BeginForm("EditProfile", "Account", FormMethod.Post, new { enctype = "multipart/form-data", id = "profileEditForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <!-- Profile Picture Upload (At the Top) -->
+                        <div class="text-center mb-3">
+                            <label for="ProfilePictureUpload" class="image-upload-label">
+                                <div class="position-relative d-inline-block">
+                                    <img id="profilePreview" src="@Url.Content(Model.ProfilePictureUrl ?? "~/default-profile.jpg")"
+                                         alt="Profile Picture" class="img-thumbnail img-hover" style="max-height: 200px; cursor: pointer;">
+                                    <div class="overlay-text">Click to change picture</div>
+                                </div>
+                            </label>
+                            <input type="file" name="ProfilePicture" id="ProfilePictureUpload" class="d-none" accept="image/*" />
+                        </div>
+
+                        <!-- Form Fields -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label" for="firstName">
+                                        <i class="bi bi-person-fill"></i> First Name
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-person"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", required = "required", id = "firstName", placeholder = "Enter First Name" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label" for="lastName">
+                                        <i class="bi bi-person-fill"></i> Last Name
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-zenstay">
+                                            <i class="bi bi-person"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", required = "required", id = "lastName", placeholder = "Enter Last Name" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="userName">
+                                <i class="bi bi-person"></i> Username
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-zenstay">
+                                    <i class="bi bi-person"></i>
+                                </span>
+                                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", required = "required", id = "userName", placeholder = "Enter Username" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="email">
+                                <i class="bi bi-envelope-fill"></i> Email
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-zenstay">
+                                    <i class="bi bi-envelope"></i>
+                                </span>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", required = "required", id = "email", placeholder = "Enter Email Address", type = "email" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="contactNo">
+                                <i class="bi bi-telephone-fill"></i> Contact Number
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-zenstay">
+                                    <i class="bi bi-telephone"></i>
+                                </span>
+                                @Html.TextBoxFor(m => m.ContactNo, new { @class = "form-control", required = "required", id = "contactNo", placeholder = "Enter Contact Number", type = "tel" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.ContactNo, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="address">
+                                <i class="bi bi-geo-alt-fill"></i> Address
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-zenstay">
+                                    <i class="bi bi-geo-alt"></i>
+                                </span>
+                                @Html.TextAreaFor(m => m.Address, new { @class = "form-control", required = "required", id = "address", placeholder = "Enter your address", rows = "3" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="@Url.Action("Profile", "Account")" class="btn btn-secondary w-100">
+                                    <i class="bi bi-arrow-left-circle"></i> Back
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-zenstay w-100">
+                                    <i class="bi bi-check-circle"></i> Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Toastr options (if Toastr is available in your project)
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "5000"
+        };
+
+        // Open file selector when clicking on the profile picture
+        $("#profilePreview").click(function () {
+            $("#ProfilePictureUpload").click();
+        });
+
+        // Preview selected profile picture
+        $("#ProfilePictureUpload").change(function () {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $("#profilePreview").attr("src", e.target.result);
+            };
+            reader.readAsDataURL(this.files[0]);
+        });
+    </script>
+
+    <style>
+        .img-hover {
+            transition: opacity 0.3s ease-in-out;
+        }
+
+            .img-hover:hover {
+                opacity: 0.7;
+            }
+
+        .overlay-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .position-relative:hover .overlay-text {
+            display: block;
+        }
+    </style>
+}

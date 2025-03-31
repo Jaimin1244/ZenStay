@@ -1,0 +1,223 @@
+﻿@model Learn_Auth.Models.Booking
+
+@{
+    ViewBag.Title = "Booking Receipt";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 d-print-none"><i class="bi bi-calendar-check"></i> Booking Details</h2>
+
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-primary text-white text-center">
+            <h4 class="mb-0"><i class="bi bi-receipt"></i> Booking Receipt</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Booking Info -->
+                <div class="col-md-6">
+                    <h5 class="text-primary"><i class="bi bi-calendar-range"></i> Booking Information</h5>
+                    <p><strong>Booking ID:</strong> @Model.BookingID</p>
+                    <p><strong>Room ID:</strong> @Model.RoomID</p>
+                    <p><strong>Check-In:</strong> @Model.CheckInDate.ToString("MMMM dd, yyyy")</p>
+                    <p><strong>Check-Out:</strong> @Model.CheckOutDate.ToString("MMMM dd, yyyy")</p>
+                    <p><strong>Booking Date:</strong> @Model.BookingDate.ToString("MMMM dd, yyyy")</p>
+                    <p>
+                        <strong>Status:</strong>
+                        @if (Model.BookingStatus == "Booked")
+                        {
+                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> Confirmed</span>
+                        }
+                        else if (Model.BookingStatus == "Pending Payment")
+                        {
+                            <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-circle"></i> Pending Payment</span>
+                        }
+                        else if (Model.BookingStatus == "Canceled")
+                        {
+                            <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Canceled</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary"><i class="bi bi-question-circle"></i> Unknown</span>
+                        }
+                    </p>
+
+                </div>
+
+                <!-- Customer Info -->
+                <div class="col-md-6">
+                    <h5 class="text-primary"><i class="bi bi-person"></i> Customer Information</h5>
+                    <p><strong>Name:</strong> @Model.User.FirstName @Model.User.LastName</p>
+                    <p><strong>Email:</strong> @Model.User.Email</p>
+                    <p><strong>Phone:</strong> @Model.User.ContactNo</p>
+                    <p><strong>Address:</strong> @Model.User.Address</p>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="row">
+                <!-- Room Info -->
+                <div class="col-md-6">
+                    <h5 class="text-primary"><i class="bi bi-door-open"></i> Room Details</h5>
+                    <p><strong>Room Number:</strong> @Model.Room.RoomNumber</p>
+                    <p><strong>Hotel Name:</strong> @Model.Room.Hotel.HotelName</p>
+                    <p><strong>Price per Night:</strong> $@Model.Room.Price.ToString("0.00")</p>
+                </div>
+
+                <!-- Payments -->
+                <div class="col-md-6">
+                    <h5 class="text-primary"><i class="bi bi-credit-card"></i> Payment Details</h5>
+                    @if (Model.Payments != null && Model.Payments.Any())
+                    {
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Payment Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var payment in Model.Payments)
+                                {
+                                    <tr>
+                                        <td>@payment.PaymentDate.ToString("MMMM dd, yyyy")</td>
+                                        <td>$@payment.PaymentAmount.ToString("0.00")</td>
+                                        <td>
+                                            @if (payment.PaymentStatus == "Completed")
+                                            {
+                                                <span class="badge bg-success">Paid</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">Pending</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-danger"><i class="bi bi-exclamation-circle"></i> No payment made yet.</p>
+                    }
+                </div>
+            </div>
+
+            <hr />
+
+            <!-- Invoice Section -->
+            @if (Model.Invoices != null && Model.Invoices.Any())
+            {
+                <h5 class="text-primary"><i class="bi bi-file-earmark-text"></i> Invoice Details</h5>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Invoice ID</th>
+                            <th>Hotel Name</th>
+                            <th>Room No</th>
+                            <th>Total Amount</th>
+                            <th>Invoice Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var invoice in Model.Invoices)
+                        {
+                            <tr>
+                                <td>@invoice.InvoiceID</td>
+                                <td>@invoice.HotelName</td>
+                                <td>@invoice.RoomNo</td>
+                                <td>$@invoice.TotalAmount.ToString("0.00")</td>
+                                <td>@invoice.InvoiceDate.ToString("MMMM dd, yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-warning"><i class="bi bi-file-earmark-excel"></i> No invoice generated.</p>
+            }
+        </div>
+
+        <!-- Hide buttons when printing -->
+        <div class="card-footer text-end d-print-none">
+
+            @if(Model.BookingStatus != "Confirmed")
+            {
+
+            <a href="@Url.Action("Edit", new { id = Model.BookingID })" class="btn btn-warning me-2">
+                <i class="bi bi-pencil-square"></i> Edit Booking
+            </a>
+            }
+            <a href="@Url.Action("Cancel", new { id = Model.BookingID })" class="btn btn-danger me-2">
+                <i class="bi bi-x-circle"></i> Cancel Booking
+            </a>
+            <a href="@Url.Action("UserBookings")" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle"></i> Back to List
+            </a>
+            <button class="btn btn-primary ms-2" onclick="window.print()">
+                <i class="bi bi-printer"></i> Print Receipt
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Print Styles -->
+<style>
+    @@media print {
+        body {
+            font-size: 14px;
+            color: black;
+            background: white;
+        }
+
+        .container {
+            width: 100%;
+            max-width: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .card {
+            border: none;
+            box-shadow: none;
+        }
+
+        .card-header {
+            background: none !important;
+            color: black !important;
+            text-align: center;
+            border-bottom: 1px solid black;
+        }
+
+        .text-primary {
+            color: black !important;
+        }
+
+        .badge {
+            border: 1px solid black;
+            color: black !important;
+            background: none !important;
+        }
+
+        .table {
+            border: 1px solid black;
+        }
+
+        .table th,
+        .table td {
+            border: 1px solid black !important;
+            padding: 5px;
+        }
+
+        .card-footer {
+            display: none;
+        }
+
+        .d-print-none {
+            display: none !important;
+        }
+    }
+</style>

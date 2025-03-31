@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Learn_Auth.Models.Payment>
+@{
+    ViewBag.Title = "Payments";
+}
+<div class="container mt-4">
+    <h2 class="mb-3"><i class="bi bi-credit-card"></i> Payment List</h2>
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Booking ID</th>
+                <th>Payment Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var payment in Model)
+            {
+                <tr>
+                    <td>@payment.BookingID</td>
+                    <td>@payment.PaymentDate.ToShortDateString()</td>
+                    <td>@payment.PaymentAmount.ToString("C")</td>
+                    <td>
+                        <span class="badge bg-@(payment.PaymentStatus == "Completed" ? "success" : "warning")">
+                            @payment.PaymentStatus
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <a href="@Url.Action("Details", new { id = payment.PaymentID })" class="btn btn-info btn-sm">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

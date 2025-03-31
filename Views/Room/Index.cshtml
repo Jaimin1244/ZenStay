@@ -1,0 +1,143 @@
+﻿@using Learn_Auth.Models
+@model IEnumerable<Learn_Auth.Models.Room>
+
+@{
+    var hotelNmae = Model.FirstOrDefault()?.Hotel?.HotelName;
+    var bookings = (List<Booking>)ViewBag.Bookings;
+    ViewBag.Title = $"Rooms in {hotelNmae}";
+}
+
+<div class="container mt-4">
+    <!-- Page Title -->
+    <h2 class="fw-bold text-center mb-4 section-title">
+        <i class="bi bi-door-open me-2"></i> Rooms in @hotelNmae
+    </h2>
+
+    <!-- Room List -->
+    <div class="row">
+        @if (Model.Any())
+        {
+            foreach (var room in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm border-0 rounded-lg overflow-hidden">
+                        <div class="room-card-img position-relative" style="background-image: url('@(string.IsNullOrEmpty(room.RoomImage) ? Url.Content("~/Content/Images/no-image.jpg") : Url.Content(room.RoomImage.Trim()))'); height: 220px; background-size: cover; background-position: center;">
+                            <span class="badge bg-success position-absolute top-0 start-0 m-2">
+                                Available
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title text-primary fw-bold">@room.RoomType</h5>
+                            <p class="text-muted mb-1"><i class="bi bi-key text-primary"></i> Room No: @room.RoomNumber</p>
+                            <p class="text-muted mb-1"><i class="bi bi-star text-warning"></i> Amenities: @room.Amenities</p>
+                            <p class="fw-bold text-success">₹@room.Price / night</p>
+                            <div class="d-flex justify-content-between">
+                                <a href="@Url.Action("Details", "Room", new { id = room.RoomId })"
+                                   class="btn btn-outline-info btn-sm view-room-btn"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#roomModal"
+                                   data-url="@Url.Action("Details", "Room", new { id = room.RoomId })">
+                                    <i class="bi bi-eye"></i> Details
+                                </a>
+                                @{
+                                    var bookedSlots = bookings?.Where(b => b.RoomID == room.RoomId)
+                                                               .Select(b => $"{b.CheckInDate:dd MMM} - {b.CheckOutDate:dd MMM yyyy}")
+                                                               .ToList();
+
+                                    bool isBooked = bookedSlots != null && bookedSlots.Any();
+                                }
+
+                                <a href="@Url.Action("Create", "Booking", new { roomId = room.RoomId })"
+                                   class="btn btn-primary btn-sm position-relative booking-btn"
+                                   data-bs-toggle="tooltip"
+                                   title="@(isBooked ? "Booked: " + string.Join(", ", bookedSlots) : "Available")">
+                                    <i class="bi bi-calendar-check"></i> Book Now
+                                    @if (isBooked)
+                                    {
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            !
+                                            <span class="visually-hidden">Booked Slots</span>
+                                        </span>
+                                    }
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="text-muted text-center">No rooms available at this hotel.</p>
+        }
+    </div>
+</div>
+
+<!-- Room Details Modal -->
+<div class="modal fade" id="roomModal" tabindex="-1" aria-labelledby="roomModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <!-- Content is loaded dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.view-room-btn').click(function (e) {
+                e.preventDefault();
+                var url = $(this).data('url');
+                $('#roomModal .modal-body').html('<div class="text-center"><i class="bi bi-arrow-repeat fs-2 text-primary"></i> Loading...</div>');
+                $('#roomModal .modal-body').load(url);
+            });
+        });
+    </script>
+        <script>
+            $(document).ready(function () {
+                $('[data-bs-toggle="tooltip"]').tooltip();
+            });
+        </script>
+}
+
+<style>
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+    .btn-primary {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border: none;
+        border-radius: 10px;
+    }
+
+    .btn-outline-info {
+        border-radius: 10px;
+    }
+    .badge {
+        font-size: 14px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+.room-card-img {
+    position: relative;
+    overflow: hidden;
+}
+
+.room-card-img::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+</style>

@@ -1,0 +1,273 @@
+﻿@model IEnumerable<Learn_Auth.Models.Hotel>
+
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Hero Section with Search Bar -->
+<section id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000" style="min-height: 80vh;">
+    <!-- Carousel Indicators -->
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+
+    <!-- Carousel Inner Wrapper -->
+    <div class="carousel-inner">
+        @for (int i = 1; i <= 3; i++)
+        {
+            var isActive = i == 1 ? "active" : "";
+            <div class="carousel-item @isActive">
+                <div class="hero-slide d-flex align-items-center justify-content-center text-center position-relative"
+                     style="background: url('@Url.Content($"~/Content/images/hero-bg-{i}.jpg")') no-repeat center center/cover; min-height: 80vh;">
+                    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.6);"></div>
+                    <div class="container hero-content text-white position-relative animate__animated animate__fadeIn">
+                        <h1 class="display-4 fw-bold mb-3">Find Your Perfect Stay with ZenStay</h1>
+                        <p class="lead mb-4">Book comfortable hotels at the best price. Hassle-free management for hotel owners.</p>
+
+                        <!-- Enhanced Search Bar -->
+                        <div class="search-bar mt-4 bg-white p-4 rounded shadow-lg">
+                            <form action="@Url.Action("Index", "Hotel")" method="get" class="row g-3">
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-primary text-white"><i class="bi bi-geo-alt"></i></span>
+                                        <input type="text" class="form-control" name="search" placeholder="Enter Destination" value="@TempData["Search"]" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-5 col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-primary text-white"><i class="bi bi-calendar-event"></i></span>
+                                        <input type="text" id="dateRange" class="form-control" name="dateRange" placeholder="Check-in - Check-out" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="bi bi-search"></i> Search
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Carousel Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</section>
+
+<!-- Flatpickr Date Picker -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        flatpickr("#dateRange", {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            minDate: "today",
+            showMonths: 2,
+        });
+    });
+</script>
+
+
+<!-- Featured Hotels Section -->
+<!--<section class="featured-hotels py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title fw-bold text-uppercase">Featured Hotels</h2>
+            <p class="text-muted">Explore top-rated hotels with great offers and reviews.</p>
+        </div>-->
+<!-- Hotel Carousel -->
+<!--<div id="hotelCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        @{
+            var hotels = Model.OrderBy(x => Guid.NewGuid()).Take(6).ToList();
+        }
+        @for (int i = 0; i < hotels.Count; i += 3)
+        {
+            var activeClass = i == 0 ? "active" : "";
+            <div class="carousel-item @activeClass">
+                <div class="row">
+                    @for (int j = i; j < i + 3 && j < hotels.Count; j++)
+                    {
+                        var hotel = hotels[j];
+                        <div class="col-md-4 mb-4">
+                            <div class="card hotel-card shadow-sm border-0">
+                                <div class="position-relative">
+                                    <img src="@Url.Content(hotel.HotelImages ?? "~/images/default-hotel.jpg")" class="card-img-top" alt="@hotel.HotelName" style="height: 220px; object-fit: cover;">
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title fw-bold">@hotel.HotelName</h5>
+                                    <p class="card-text text-muted"><i class="bi bi-geo-alt"></i> @hotel.City, @hotel.State</p>
+                                    <a href="@Url.Action("Details", "Hotel", new { id = hotel.HotelId })" class="btn btn-outline-primary w-100">
+                                        <i class="bi bi-eye"></i> View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>-->
+<!-- Hotel Carousel Controls -->
+<!--<button class="carousel-control-prev" type="button" data-bs-target="#hotelCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#hotelCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    </div>
+</section>-->
+<!-- Featured Hotels Section -->
+<section class="featured-hotels py-5">
+    <div class="container">
+        <div class="text-center my-4">
+            <h2 class="section-title fw-bold text-uppercase mb-4">Featured Hotels</h2>
+        </div>
+
+        <div class="row">
+            @foreach (var hotel in Model.OrderBy(x => Guid.NewGuid()).Take(3))
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card hotel-card shadow-sm border-0">
+                        <div class="position-relative">
+                            @if (!string.IsNullOrEmpty(hotel.HotelImages))
+                            {
+                                <img src="@Url.Content(hotel.HotelImages)" class="card-img-top rounded-top" alt="@hotel.HotelName" style="height: 220px; object-fit: cover;">
+                            }
+                            else
+                            {
+                                <img src="~/images/default-hotel.jpg" class="card-img-top rounded-top" alt="@hotel.HotelName" style="height: 220px; object-fit: cover;">
+                            }
+                            @*<span class="badge bg-primary position-absolute top-0 end-0 m-2">Featured</span>*@
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">
+                                <i class="bi bi-building"></i> @hotel.HotelName
+                            </h5>
+                            <p class="card-text text-muted">
+                                <i class="bi bi-geo-alt"></i> @hotel.City, @hotel.State
+                            </p>
+                            <p class="card-text">
+                                <i class="bi bi-telephone"></i> @hotel.ContactInfo
+                            </p>
+                            <a href="@Url.Action("Details", "Hotel", new { id = hotel.HotelId })" class="btn btn-primary w-100">
+                                <i class="bi bi-eye"></i> View More Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="text-center my-4">
+            <a href="@Url.Action("Index", "Hotel")" class="btn btn-outline-primary btn-lg d-inline-flex align-items-center gap-2">
+                <i class="bi bi-arrow-right-circle"></i> Explore More
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">How It Works</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <h4>For Customers</h4>
+                <ul>
+                    <li>Search &amp; Compare Hotels</li>
+                    <li>Book Instantly &amp; Pay Securely</li>
+                    <li>Enjoy Your Stay</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h4>For Hotel Owners</h4>
+                <ul>
+                    <li>List Your Hotel in Minutes</li>
+                    <li>Manage Bookings &amp; Guests</li>
+                    <li>Grow Your Business</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose ZenStay Section -->
+<section class="why-choose py-5">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">Why Choose ZenStay?</h2>
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="feature-icon mb-3">
+                    <i class="fs-1 text-primary">&#x2714;</i>
+                </div>
+                <h5>Best Price Guarantee</h5>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-icon mb-3">
+                    <i class="fs-1 text-primary">&#x2714;</i>
+                </div>
+                <h5>Verified Hotels &amp; Reviews</h5>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-icon mb-3">
+                    <i class="fs-1 text-primary">&#x2714;</i>
+                </div>
+                <h5>Easy Booking &amp; Cancellation</h5>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">Testimonials</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card testimonial-card h-100 p-3">
+                    <div class="card-body">
+                        <p class="card-text">"Amazing service and excellent hotels! Highly recommend ZenStay for a seamless booking experience."</p>
+                        <p class="fw-bold mb-0">- John Doe</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card testimonial-card h-100 p-3">
+                    <div class="card-body">
+                        <p class="card-text">"Managing my hotel has never been easier. ZenStay offers a great platform for hotel owners."</p>
+                        <p class="fw-bold mb-0">- Jane Smith</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card testimonial-card h-100 p-3">
+                    <div class="card-body">
+                        <p class="card-text">"The best hotel booking experience! I found exactly what I needed at the best price."</p>
+                        <p class="fw-bold mb-0">- Mike Johnson</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call-to-Action Section -->
+<section class="cta-section py-5 text-center">
+    <div class="container">
+        <h2 class="section-title">Ready to Experience ZenStay?</h2>
+        <p>Whether you're a traveler or a hotel owner, join us today!</p>
+        <a href="@Url.Action("Index", "Hotel")" class="btn btn-primary btn-lg me-3">Find Hotels</a>
+        <a href="#" class="btn btn-outline-primary btn-lg">List Your Hotel</a>
+    </div>
+</section>

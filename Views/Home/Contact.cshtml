@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "Contact";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Hero Section -->
+<section class="hero-section contact-hero position-relative">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content text-center position-relative">
+        <h1 class="display-3 text-white">Get in Touch</h1>
+        <p class="lead text-white">We're here to help you. Reach out with any questions or concerns.</p>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="contact-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Contact Information -->
+            <div class="col-md-5 mb-4">
+                <div class="contact-info p-4">
+                    <h2 class="section-title">Contact Information</h2>
+                    <ul class="list-unstyled contact-details">
+                        <li><strong>Email:</strong> <a href="mailto:support@zenstay.com">support@zenstay.com</a></li>
+                        <li><strong>Phone:</strong> <a href="tel:+1234567890">+1 234 567 890</a></li>
+                        <li><strong>Address:</strong> 123 Hotel Lane, Cityville, Country</li>
+                        <li><strong>Hours:</strong> Mon - Fri: 9:00 AM - 6:00 PM</li>
+                    </ul>
+                    <h4 class="mt-4">Follow Us</h4>
+                    <ul class="list-inline social-icons">
+                        <li class="list-inline-item">
+                            <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#" title="Twitter"><i class="bi bi-twitter"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Contact Form -->
+            <div class="col-md-7">
+                <div class="contact-form bg-light p-4 rounded shadow-sm">
+                    <h2 class="section-title">Send Us a Message</h2>
+                    <form id="contactForm">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" placeholder="Your Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" placeholder="Subject" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" rows="5" placeholder="Your Message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

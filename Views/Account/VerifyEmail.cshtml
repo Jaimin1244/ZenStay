@@ -1,0 +1,192 @@
+﻿@model Learn_Auth.ViewModel.VerifyOTPViewModel
+@{
+    ViewBag.Title = "Verify Your Email";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 rounded-3">
+                <!-- ZenStay Themed Card Header with Green Gradient -->
+                <div class="card-header text-white text-center py-3" style="background: linear-gradient(90deg, #0F3A31, #145847);">
+                    <h2 class="h4 mb-0">
+                        <i class="bi bi-envelope-check-fill"></i> Verify Your Email
+                    </h2>
+                    <p class="mb-0 small">Enter the OTP sent to your email</p>
+                </div>
+
+                <div class="card-body p-4">
+                    @using (Html.BeginForm("VerifyEmail", "Account", FormMethod.Post, new { id = "verifyEmailForm", @class = "needs-validation", novalidate = "novalidate" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <!-- OTP Field with HTML5 & Unobtrusive Validation -->
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.OTP, new { @class = "form-label" })
+                            <div class="input-group">
+                                <span class="input-group-text bg-zenstay"><i class="bi bi-key-fill"></i></span>
+                                @Html.TextBoxFor(m => m.OTP, new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "Enter OTP",
+                                    required = "required",
+                                    autocomplete = "one-time-code",
+                                    pattern = "\\d{6}"
+                                })
+                                @Html.ValidationMessageFor(m => m.OTP, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter a valid OTP.
+                            </div>
+                        </div>
+
+                        <!-- OTP Expiration Progress Bar & Resend Option -->
+                        <div class="mb-3 text-center">
+                            <p class="small text-muted mb-1">OTP expires in:</p>
+                            <div class="progress position-relative" style="height: 20px;">
+                                <div id="timerProgress" class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuemin="0" aria-valuemax="100"></div>
+                                <!-- Timer text is absolutely positioned to always be centered -->
+                                <span id="timerText" class="position-absolute top-50 start-50 translate-middle fw-bold text-warning"></span>
+                            </div>
+                            <!-- Resend OTP button appears when expired -->
+                            <div id="resendContainer" class="mt-2" style="display: none;">
+                                <button type="button" class="btn btn-link p-0" id="resendLink">Resend OTP</button>
+                            </div>
+                        </div>
+
+                        <!-- Verify Button -->
+                        <button type="submit" class="btn btn-zenstay w-100" id="verifyBtn">
+                            <i class="bi bi-check-circle-fill"></i> Verify Email
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            "use strict";
+
+            // Enable Bootstrap's client-side form validation
+            const form = document.getElementById("verifyEmailForm");
+            form.addEventListener("submit", function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    form.classList.add("was-validated");
+                }
+            }, false);
+
+            // Set up smooth transition for the progress bar
+            $("#timerProgress").css("transition", "width 1s ease-in-out");
+
+            // Define the total OTP validity period (in milliseconds). Here, 5 minutes is used.
+            const totalValidity = 150000;
+
+            // Parse OTP expiry from the model and convert it to a Date object
+            const otpExpiryString = '@(Model.OTPExpiry?.ToString("yyyy-MM-ddTHH:mm:ssZ") ?? "")';
+            const otpExpiry = new Date(otpExpiryString);
+            const timerProgress = $("#timerProgress");
+            const timerText = $("#timerText");
+            const resendContainer = $("#resendContainer");
+            const resendLink = $("#resendLink");
+
+            let timerInterval;
+
+            // Update timer and progress bar function
+            function updateTimer() {
+                const now = new Date();
+                const distance = otpExpiry - now;
+
+                if (distance <= 0) {
+                    clearInterval(timerInterval);
+                    timerText.text("Expired").css("color", "#fff");
+                    timerProgress.removeClass("bg-success bg-warning").addClass("bg-danger")
+                        .css("width", "100%")
+                        .attr("aria-valuenow", 0);
+                    resendContainer.show();
+                    return;
+                }
+
+                // Calculate minutes and seconds remaining
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                timerText.text(`${minutes}m ${seconds}s`);
+
+                // Calculate percentage left relative to total validity period
+                const percentLeft = (distance / totalValidity) * 100;
+                timerProgress.css("width", percentLeft + "%")
+                    .attr("aria-valuenow", percentLeft.toFixed(0));
+
+                // Update progress bar styling based on remaining time
+                if (percentLeft <= 10) {
+                    timerProgress.removeClass("bg-success bg-warning").addClass("bg-danger");
+                    timerText.addClass("blink").css("color", "#fff");
+                } else if (percentLeft <= 30) {
+                    timerProgress.removeClass("bg-success bg-danger").addClass("bg-warning");
+                    timerText.removeClass("blink").css("color", "#000");
+                } else {
+                    timerProgress.removeClass("bg-warning bg-danger").addClass("bg-success");
+                    timerText.removeClass("blink").css("color", "#fff");
+                }
+            }
+
+            $("<style>")
+                .prop("type", "text/css")
+                .html(`
+                    .blink {
+                        animation: blinker 1s linear infinite;
+                    }
+                    @@keyframes blinker {
+                        50% { opacity: 0; }
+                    }
+                `)
+                .appendTo("head");
+
+            // Start timer updates
+            timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+
+            // Resend OTP button click handler (replace with your actual logic)
+            resendLink.on("click", function () {
+                alert("Resend OTP logic here...");
+                // Optionally, add an AJAX call to resend the OTP.
+            });
+
+            // AJAX submission for OTP verification
+            $("#verifyEmailForm").submit(function (event) {
+                event.preventDefault();
+                const $verifyBtn = $("#verifyBtn");
+                const originalText = $verifyBtn.html();
+
+                $verifyBtn.prop("disabled", true)
+                    .html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Verifying...');
+
+                $.ajax({
+                    url: '@Url.Action("VerifyEmail", "Account")',
+                    type: "POST",
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message, "Success");
+                            // Redirect after a short delay
+                            setTimeout(function () {
+                                window.location.href = '@Url.Action("Profile", "Account")';
+                            }, 2000);
+                        } else {
+                            toastr.error(response.message, "Error");
+                            $verifyBtn.prop("disabled", false).html(originalText);
+                        }
+                    },
+                    error: function () {
+                        toastr.error("Something went wrong. Please try again!", "Error");
+                        $verifyBtn.prop("disabled", false).html(originalText);
+                    }
+                });
+            });
+        })();
+    </script>
+}

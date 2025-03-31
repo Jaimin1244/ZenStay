@@ -1,0 +1,95 @@
+﻿@model IEnumerable<Learn_Auth.Models.Booking>
+
+@{
+    ViewBag.Title = "My Bookings";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">
+        <i class="bi bi-calendar-check"></i> My Bookings
+    </h2>
+
+    <div class="card shadow-lg border-0 rounded-3 mb-5" style="background-color: #f8f9fa;">
+        <div class="card-body p-4">
+            @if (!Model.Any())
+            {
+                <div class="alert alert-warning text-center" role="alert">
+                    <i class="bi bi-info-circle"></i> No bookings found! Start your journey by booking a room.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle">
+                        <thead class="table-dark text-white">
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Hotel</th>
+                                <th>Room No.</th>
+                                <th>Check-In</th>
+                                <th>Check-Out</th>
+                                <th>Booking Date</th>
+                                <th>Status</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var booking in Model)
+                            {
+                                <tr>
+                                    <td><strong>#@booking.BookingID</strong></td>
+                                    <td>@booking.Room.Hotel.HotelName</td>
+                                    <td>@booking.Room.RoomNumber</td>
+                                    <td><i class="bi bi-calendar-check"></i> @booking.CheckInDate.ToString("dd MMM yyyy")</td>
+                                    <td><i class="bi bi-calendar-x"></i> @booking.CheckOutDate.ToString("dd MMM yyyy")</td>
+                                    <td><i class="bi bi-clock"></i> @booking.BookingDate.ToString("dd MMM yyyy")</td>
+                                    <td>
+                                        <span class="badge
+                                            @(booking.BookingStatus == "Booked" ? "bg-success" :
+                                            booking.BookingStatus == "Pending" ? "bg-warning text-dark" : "bg-danger")">
+                                            @booking.BookingStatus
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="@Url.Action("Details", new { id = booking.BookingID })"
+                                           class="btn btn-sm btn-info me-1" data-bs-toggle="tooltip" title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <a href="@Url.Action("Cancel", new { id = booking.BookingID })"
+                                           class="btn btn-sm btn-danger me-1" data-bs-toggle="tooltip" title="Cancel Booking">
+                                            <i class="bi bi-x-circle"></i>
+                                        </a>
+                                        @if (booking.BookingStatus == "Pending Payment")
+                                        {
+                                            <a href="@Url.Action("Edit", new { id = booking.BookingID })"
+                                            class="btn btn-sm btn-warning me-1" data-bs-toggle="tooltip" title="Edit Booking">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <a href="@Url.Action("MakePayment", "Payment", new { bookingId = booking.BookingID })"
+                                               class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Make Payment">
+                                                <i class="bi bi-cash-stack"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        // Enable Bootstrap tooltips
+        document.addEventListener('DOMContentLoaded', function () {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+}

@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Generate Invoice";
+}
+
+<h2 class="mb-4">
+    <i class="bi bi-cash-stack"></i> Generate Invoice
+</h2>
+
+<div class="card shadow-lg">
+    <div class="card-body">
+        <p>Are you sure you want to generate an invoice for Booking ID <strong>@ViewBag.BookingID</strong>?</p>
+
+        <form action="@Url.Action("GenerateInvoice", "Invoice", new { bookingId = ViewBag.BookingID })" method="post">
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-check-circle"></i> Confirm
+            </button>
+            <a href="@Url.Action("Index", "Invoice")" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Cancel
+            </a>
+        </form>
+    </div>
+</div>

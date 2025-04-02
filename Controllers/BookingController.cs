@@ -98,27 +98,72 @@ namespace Learn_Auth.Controllers
             return View(model);
         }
 
-        // GET: Booking/SelectHotelRoom
+        // GET: Booking/SelectLocation
         [RoleAuthorize(3)]
-        public ActionResult SelectHotelRoom()
+        public ActionResult SelectLocation()
         {
-            var hotels = _context.Hotels.ToList();
-            ViewBag.Hotels = new SelectList(hotels, "HotelId", "HotelName");
+            var cities = _context.Hotels
+                                 .Select(h => h.City)
+                                 .Distinct()
+                                 .ToList();
+
+            ViewBag.Cities = new SelectList(cities);
             return View();
         }
+
+
+        // GET: Booking/SelectHotelRoom
+        [RoleAuthorize(3)]
+        public ActionResult SelectHotelRoom(string city)
+        {
+            var cities = _context.Hotels
+                        .Select(h => h.City)
+                        .Distinct()
+                        .ToList();
+
+            ViewBag.Cities = new SelectList(cities);  // Pass cities for dropdown
+            ViewBag.Hotels = new SelectList(new List<SelectListItem>()); // Empty hotels initially
+            return View();
+        }
+        // GET: Booking/GetHotelsByCity
+        [HttpGet]
+        public JsonResult GetHotelsByCity(string city)
+        {
+            var hotels = _context.Hotels
+                .Where(h => h.City == city)
+                .Select(h => new
+                {
+                    h.HotelId,
+                    h.HotelName
+                })
+                .ToList();
+
+            return Json(hotels, JsonRequestBehavior.AllowGet);
+        }
+
 
         // GET: Booking/GetRoomsByHotelId
         [HttpGet]
         public JsonResult GetRoomsByHotelId(int hotelId)
         {
             var rooms = _context.Rooms
-                .Where(r => r.HotelId == hotelId)
-                .Select(r => new
-                {
-                    r.RoomId,
-                    DisplayText = r.RoomNumber + " - " + r.RoomType
-                })
-                .ToList();
+         .Where(r => r.HotelId == hotelId)
+         .Select(r => new
+         {
+             r.RoomId,
+             r.RoomNumber,
+             r.RoomType,
+             r.Price
+         })
+         .ToList() // 🔹 Fetch data first
+
+         .Select(r => new // 🔹 Now apply formatting in memory
+        {
+             r.RoomId,
+             DisplayText = $"{r.RoomNumber} - {r.RoomType} (₹{r.Price}/night)"
+         })
+         .ToList();
+
             return Json(rooms, JsonRequestBehavior.AllowGet);
         }
 
@@ -126,7 +171,7 @@ namespace Learn_Auth.Controllers
         [HttpPost]
         [RoleAuthorize(3)]
         [ValidateAntiForgeryToken]
-        public ActionResult RedirectToBooking(int SelectedRoomId)
+        public ActionResult RedirectToBooking(int SelectedRoomId, string SelectedCity)
         {
             if (SelectedRoomId == 0)
             {
@@ -225,7 +270,7 @@ namespace Learn_Auth.Controllers
         }
 
         // GET: Booking/Edit/5
-        [RoleAuthorize(3)]
+        [RoleAuthorize(3)]  
         public ActionResult Edit(int? id)
         {
             if (id == null)

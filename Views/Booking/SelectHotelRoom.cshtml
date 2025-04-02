@@ -1,7 +1,8 @@
 ﻿@model Learn_Auth.Models.Booking
 @using System.Web.Mvc
 @{
-    ViewBag.Title = "Select Hotel and Room";
+    ViewBag.Title = "Select Location, Hotel and Room";
+    var cities = ViewBag.Cities as SelectList;
     var hotels = ViewBag.Hotels as SelectList;
 }
 
@@ -9,7 +10,7 @@
     <div class="card shadow-lg border-0 rounded-4">
         <div class="card-header bg-gradient bg-success text-white py-4 rounded-top-4">
             <h2 class="mb-0 text-center">
-                <i class="bi bi-building me-2"></i> Select a Hotel and Room
+                <i class="bi bi-building me-2"></i> Select Location, Hotel, and Room
             </h2>
         </div>
 
@@ -17,11 +18,20 @@
             @using (Html.BeginForm("RedirectToBooking", "Booking", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
             {
                 @Html.AntiForgeryToken()
+
+                <!-- City Dropdown -->
+                <div class="mb-3">
+                    <label for="cityDropdown" class="form-label fw-semibold">Select City</label>
+                    @Html.DropDownList("SelectedCity", cities, "Select a City", new { @class = "form-control", id = "cityDropdown" })
+                </div>
+
+                <!-- Hotel Dropdown -->
                 <div class="mb-3">
                     <label for="hotelDropdown" class="form-label fw-semibold">Select Hotel</label>
                     @Html.DropDownList("SelectedHotelId", hotels, "Select a Hotel", new { @class = "form-control", id = "hotelDropdown" })
                 </div>
 
+                <!-- Room Dropdown -->
                 <div class="mb-3">
                     <label for="roomDropdown" class="form-label fw-semibold">Select Room</label>
                     <select id="roomDropdown" name="SelectedRoomId" class="form-control">
@@ -41,28 +51,60 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            // When hotel dropdown changes, fetch rooms via AJAX
+            // When city dropdown changes, fetch hotels dynamically
+            $('#cityDropdown').change(function () {
+                var city = $(this).val();
+                var $hotelDropdown = $('#hotelDropdown');
+                var $roomDropdown = $('#roomDropdown');
+
+                $hotelDropdown.empty().append('<option value="">-- Select Hotel --</option>');
+                $roomDropdown.empty().append('<option value="">-- Select Room --</option>');
+
+                if (city) {
+                    $.ajax({
+                        url: '@Url.Action("GetHotelsByCity", "Booking")',
+                        type: 'GET',
+                        data: { city: city },
+                        success: function (data) {
+                            if (data.length === 0) {
+                                $hotelDropdown.append('<option value="">-- No hotels available --</option>');
+                            } else {
+                                $.each(data, function (i, hotel) {
+                                    $hotelDropdown.append('<option value="' + hotel.HotelId + '">' + hotel.HotelName + '</option>');
+                                });
+                            }
+                        },
+                        error: function () {
+                            alert("Error fetching hotels.");
+                        }
+                    });
+                }
+            });
+
+            // When hotel dropdown changes, fetch rooms dynamically
             $('#hotelDropdown').change(function () {
                 var hotelId = $(this).val();
+                var $roomDropdown = $('#roomDropdown');
+                $roomDropdown.empty().append('<option value="">-- Select Room --</option>');
+
                 if (hotelId) {
                     $.ajax({
                         url: '@Url.Action("GetRoomsByHotelId", "Booking")',
                         type: 'GET',
                         data: { hotelId: hotelId },
                         success: function (data) {
-                            var $roomDropdown = $('#roomDropdown');
-                            $roomDropdown.empty();
-                            $roomDropdown.append('<option value="">-- Select Room --</option>');
-                            $.each(data, function (i, room) {
-                                $roomDropdown.append('<option value="' + room.RoomId + '">' + room.DisplayText + '</option>');
-                            });
+                            if (data.length === 0) {
+                                $roomDropdown.append('<option value="">-- No rooms available --</option>');
+                            } else {
+                                $.each(data, function (i, room) {
+                                    $roomDropdown.append('<option value="' + room.RoomId + '">' + room.DisplayText + '</option>');
+                                });
+                            }
                         },
                         error: function () {
-                            alert("An error occurred while fetching rooms.");
+                            alert("Error fetching rooms.");
                         }
                     });
-                } else {
-                    $('#roomDropdown').empty().append('<option value="">-- Select Room --</option>');
                 }
             });
         });

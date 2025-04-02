@@ -79,67 +79,18 @@
 
 
 <!-- Featured Hotels Section -->
-<!--<section class="featured-hotels py-5 bg-light">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="section-title fw-bold text-uppercase">Featured Hotels</h2>
-            <p class="text-muted">Explore top-rated hotels with great offers and reviews.</p>
-        </div>-->
-<!-- Hotel Carousel -->
-<!--<div id="hotelCarousel" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-        @{
-            var hotels = Model.OrderBy(x => Guid.NewGuid()).Take(6).ToList();
-        }
-        @for (int i = 0; i < hotels.Count; i += 3)
-        {
-            var activeClass = i == 0 ? "active" : "";
-            <div class="carousel-item @activeClass">
-                <div class="row">
-                    @for (int j = i; j < i + 3 && j < hotels.Count; j++)
-                    {
-                        var hotel = hotels[j];
-                        <div class="col-md-4 mb-4">
-                            <div class="card hotel-card shadow-sm border-0">
-                                <div class="position-relative">
-                                    <img src="@Url.Content(hotel.HotelImages ?? "~/images/default-hotel.jpg")" class="card-img-top" alt="@hotel.HotelName" style="height: 220px; object-fit: cover;">
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title fw-bold">@hotel.HotelName</h5>
-                                    <p class="card-text text-muted"><i class="bi bi-geo-alt"></i> @hotel.City, @hotel.State</p>
-                                    <a href="@Url.Action("Details", "Hotel", new { id = hotel.HotelId })" class="btn btn-outline-primary w-100">
-                                        <i class="bi bi-eye"></i> View Details
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-        }
-    </div>-->
-<!-- Hotel Carousel Controls -->
-<!--<button class="carousel-control-prev" type="button" data-bs-target="#hotelCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#hotelCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-            </button>
-        </div>
-    </div>
-</section>-->
-<!-- Featured Hotels Section -->
+
 <section class="featured-hotels py-5">
     <div class="container">
         <div class="text-center my-4">
             <h2 class="section-title fw-bold text-uppercase mb-4">Featured Hotels</h2>
         </div>
 
-        <div class="row">
-            @foreach (var hotel in Model.OrderBy(x => Guid.NewGuid()).Take(3))
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card hotel-card shadow-sm border-0">
+        <div class="scrolling-wrapper" style="overflow: hidden; white-space: nowrap; position: relative;">
+            <div class="scrolling-content d-flex" style="display: flex; animation: scrollLeft 150s linear infinite;">
+                @foreach (var hotel in Model.Concat(Model)) // Duplicate items for seamless looping
+                {
+                    <div class="card hotel-card shadow-sm border-0 mx-2" style="width: 300px; flex: 0 0 auto;">
                         <div class="position-relative">
                             @if (!string.IsNullOrEmpty(hotel.HotelImages))
                             {
@@ -149,7 +100,6 @@
                             {
                                 <img src="~/images/default-hotel.jpg" class="card-img-top rounded-top" alt="@hotel.HotelName" style="height: 220px; object-fit: cover;">
                             }
-                            @*<span class="badge bg-primary position-absolute top-0 end-0 m-2">Featured</span>*@
                         </div>
                         <div class="card-body">
                             <h5 class="card-title fw-bold">
@@ -166,9 +116,10 @@
                             </a>
                         </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
         </div>
+
         <div class="text-center my-4">
             <a href="@Url.Action("Index", "Hotel")" class="btn btn-outline-primary btn-lg d-inline-flex align-items-center gap-2">
                 <i class="bi bi-arrow-right-circle"></i> Explore More
@@ -176,6 +127,25 @@
         </div>
     </div>
 </section>
+
+<style>
+    @@keyframes scrollLeft {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-50%);
+        }
+    }
+    .scrolling-content {
+        display: flex;
+        width: max-content;
+    }
+</style>
+
+
+
+
 
 <!-- How It Works Section -->
 <section class="how-it-works py-5 bg-light">

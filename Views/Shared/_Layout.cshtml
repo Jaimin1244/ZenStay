@@ -20,6 +20,207 @@
     <link rel="stylesheet" href="~/Content/customStyle.css" />
 
     <style>
+        .quick-actions {
+            display: flex;
+            flex-direction: column; /* Ensure buttons stack vertically */
+            align-items: flex-end; /* Align buttons to the right */
+            position: fixed; /* Keep them floating */
+            right: 20px; /* Adjust as needed */
+            top: 50%; /* Adjust position */
+            transform: translateY(-50%);
+            z-index : 1244;
+        }
+
+        .quick-btn {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 50px; /* Default small width */
+            height: 50px;
+            background-color: #ff3b30; /* Example color */
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 50px;
+            overflow: hidden;
+            transition: width 0.3s ease; /* Only expand width smoothly */
+            padding: 10px;
+            white-space: nowrap;
+            margin: 5px 0; /* Space between buttons */
+        }
+
+            /* Expand ONLY the hovered button */
+            .quick-btn:hover {
+                width: 160px;
+                padding-left: 15px;
+            }
+
+            .quick-btn i {
+                font-size: 22px;
+                margin-right: 8px;
+            }
+
+        /* Different colors for each button (optional) */
+        .call {
+            background-color: #e63946; /* Red */
+        }
+
+        .whatsapp {
+            background-color: #25D366; /* Green */
+        }
+
+        .mail {
+            background-color: #007bff; /* Blue */
+        }
+        /* Floating Banner */
+        .promo-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 300px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(-120%);
+            transition: transform 0.5s ease-in-out;
+            z-index: 1000;
+        }
+
+            /* Slide-in Animation */
+            .promo-banner.show {
+                transform: translateX(0);
+            }
+
+        /* Close Button */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+
+            .close-btn:hover {
+                color: red;
+            }
+
+        /* Promotion Button */
+        .promo-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #ff6600;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+            .promo-btn:hover {
+                background: #cc5500;
+            }
+
+/* Chatbot Floating Button */
+#chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 2480;
+}
+
+#chatbot-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+#chatbot-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+#chatbot-btn i {
+    font-size: 20px;
+}
+
+        /* Style for the chatbot container */
+        #chatbot-frame {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 350px;
+            height: 480px;
+            background: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            display: none;
+            overflow: hidden;
+        }
+
+        /* Close button positioned over the iframe */
+        #close-chatbot {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 10; /* Ensures it's above the iframe */
+        }
+
+
+@@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Chatbox Header */
+.chatbot-header {
+    background: #007bff;
+    color: white;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 12px 12px 0 0;
+    font-weight: bold;
+}
+
+.chatbot-header button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.chatbot-header button:hover {
+    color: #ffcccb;
+}
+
+
 
         .loader-container {
             position: fixed;
@@ -211,6 +412,72 @@
         @RenderBody()
     </main>
 
+    <section>
+        <div class="quick-actions">
+            <a href="tel:+919054220185" class="quick-btn call">
+                <i class="bi bi-telephone"></i> Call
+            </a>
+            <a href="https://wa.me/919054220185" class="quick-btn whatsapp">
+                <i class="bi bi-whatsapp"></i> WhatsApp
+            </a>
+            <a href="mailto:pshivay603@gmail.com" class="quick-btn mail">
+                <i class="bi bi-envelope"></i> Email
+            </a>
+        </div>
+    </section>
+    <!-- Promotion Popup -->
+    <div id="promo-banner" class="promo-banner">
+        <div class="promo-content">
+            <span class="close-btn" onclick="closePromo()">&times;</span>
+            <h2>🌟 Special Hotel Offer! 🌟</h2>
+            <p>Get <strong>30% OFF</strong> on all bookings this week! Use code: <strong>HOTEL30</strong></p>
+            <a href="@Url.Action("Create", "Booking")" class="promo-btn">Book Now</a>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function () {
+            setTimeout(function () {
+                document.getElementById("promo-banner").classList.add("show");
+            }, 3000);
+        };
+
+        // Close the promo banner
+        function closePromo() {
+            document.getElementById("promo-banner").classList.remove("show");
+        }
+    </script>
+
+    <!-- Chatbot Floating Button -->
+    <div id="chatbot-container">
+        <button id="chatbot-btn">
+            <i class="bi bi-chat-dots"></i> Chat
+        </button>
+
+        <div id="chatbot-frame">
+            <button id="close-chatbot">&times;</button> <!-- Close Button -->
+
+            <iframe allow="microphone;"
+                    width="350"
+                    height="480"
+                    src="https://console.dialogflow.com/api-client/demo/embedded/44e8777e-db23-4690-ae7d-74fdfe4f920f">
+            </iframe>
+        </div>
+    </div>
+
+
+    <!-- Chatbot Script -->
+    <script>
+        document.getElementById("chatbot-btn").addEventListener("click", function () {
+            document.getElementById("chatbot-frame").style.display = "block";
+        });
+
+        document.getElementById("close-chatbot").addEventListener("click", function () {
+            document.getElementById("chatbot-frame").style.display = "none";
+        });
+    </script>
+
+
     <!-- Footer -->
     <footer class="d-print-none">
         <div class="container container-custom">
@@ -269,26 +536,26 @@
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-   <script>
-       document.addEventListener("DOMContentLoaded", function () {
-           setTimeout(function () {
-               document.getElementById("loader").classList.add("hidden"); // Hide loader after 1.5s delay
-           }, 1500);
-       });
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(function () {
+                document.getElementById("loader").classList.add("hidden"); // Hide loader after 1.5s delay
+            }, 1500);
+        });
 
 
-    window.addEventListener("beforeunload", function () {
-        document.getElementById("loader").classList.remove("hidden"); // Show loader before navigating to another page
-    });
+        window.addEventListener("beforeunload", function () {
+            document.getElementById("loader").classList.remove("hidden"); // Show loader before navigating to another page
+        });
 
-       window.addEventListener("pageshow", function (event) {
-           if (event.persisted) {
-               setTimeout(function () {
-                   document.getElementById("loader").classList.add("hidden"); // Hide loader after 1.5s delay
-               }, 1500); // Hide loader if page is restored from cache (Back button)
-           }
-       });
-</script>
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted) {
+                setTimeout(function () {
+                    document.getElementById("loader").classList.add("hidden"); // Hide loader after 1.5s delay
+                }, 1500); // Hide loader if page is restored from cache (Back button)
+            }
+        });
+    </script>
 
     <!-- Add a div to load the response -->
     <div id="content"></div>

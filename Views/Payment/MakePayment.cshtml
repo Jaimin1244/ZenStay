@@ -1,140 +1,112 @@
 ﻿@model Learn_Auth.Models.Payment
 @{
-    ViewBag.Title = "Make Payment";
+    ViewBag.Title = "Secure Payment Gateway";
 }
 
 <div class="container mt-5" style="min-height: 80vh;">
     <div class="row g-4">
-        <!-- Sidebar for Payment Methods -->
-        <div class="col-md-4">
+        <!-- Booking Summary Section -->
+        <div class="col-md-5">
             <div class="card shadow-lg border-0 rounded-3">
                 <div class="card-header bg-dark text-white text-center py-3">
-                    <h5 class="mb-0">Guest & Booking Details</h5>
+                    <h5 class="mb-0">Booking Summary</h5>
                 </div>
                 <div class="card-body">
-                    <!-- Guest Name -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">
-                            <i class="bi bi-person-circle me-2"></i> Guest Name
-                        </label>
-                        <div class="form-control-plaintext border rounded bg-light px-3 py-2">
-                            @Model.Booking.User.FirstName
-                        </div>
-                    </div>
-
-                    <!-- Booking Date -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">
-                            <i class="bi bi-calendar-event me-2"></i> Booking Date
-                        </label>
-                        <div class="form-control-plaintext border rounded bg-light px-3 py-2">
-                            @Model.Booking.BookingDate
-                        </div>
-                    </div>
-
-                    <!-- Room Details -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">
-                            <i class="bi bi-door-open me-2"></i> Room Details
-                        </label>
-                        <div class="form-control-plaintext border rounded bg-light px-3 py-2">
-                            @Model.Booking.Room.RoomType
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">
-                            <i class="bi bi-currency-rupee me-2"></i> Payment Amount
-                        </label>
-                        <div class="form-control-plaintext border rounded bg-light px-3 py-2">
-                            @Model.PaymentAmount
-                        </div>
-                    </div>
-
-                    <hr class="my-3">
-
-                    <!-- Payment Methods -->
-                    <h6 class="fw-bold text-secondary text-center">
-                        <i class="bi bi-wallet-fill me-2"></i> Select Payment Method
-                    </h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span class="fw-bold">Guest Name:</span>
+                            <span>@Model.Booking.User.FirstName</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span class="fw-bold">Booking Date:</span>
+                            <span>@Model.Booking.BookingDate.ToString("dd MMM yyyy")</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span class="fw-bold">Room Type:</span>
+                            <span>@Model.Booking.Room.RoomType</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span class="fw-bold">Amount Due:</span>
+                            <span class="text-success fw-bold">$@Model.PaymentAmount.ToString("F2")</span>
+                        </li>
+                    </ul>
+                    <hr>
+                    <h6 class="fw-bold text-secondary text-center">Select Payment Method</h6>
                     <ul class="list-group" id="payment-method-list">
-                        <li class="list-group-item list-group-item-action" onclick="loadPaymentForm('upi', this)">
-                            <i class="bi bi-qr-code me-2"></i> UPI Payment
-                        </li>
-                        <li class="list-group-item list-group-item-action" onclick="loadPaymentForm('card', this)">
-                            <i class="bi bi-credit-card me-2"></i> Credit/Debit Card
-                        </li>
-                        <li class="list-group-item list-group-item-action" onclick="loadPaymentForm('netbanking', this)">
-                            <i class="bi bi-bank me-2"></i> Net Banking
-                        </li>
+                        <li class="list-group-item list-group-item-action" onclick="loadPaymentForm('applepay', this)"><i class="bi bi-apple"></i> Apple Pay</li>
+                        <li class="list-group-item list-group-item-action" onclick="loadPaymentForm('upi', this)"><i class="bi bi-cash"></i> UPI Payment</li>
+                        <li class="list-group-item list-group-item-action" onclick="loadPaymentForm('card', this)"><i class="bi bi-credit-card"></i> Credit/Debit Card</li>
+                        <li class="list-group-item list-group-item-action" onclick="loadPaymentForm('netbanking', this)"><i class="bi bi-bank"></i> Net Banking</li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <!-- Payment Form Container -->
-        <div class="col-md-8">
+        <!-- Payment Form Section -->
+        <div class="col-md-7">
             <div class="card shadow-lg border-0 rounded-3">
                 <div class="card-header bg-primary text-white text-center py-3">
-                    <h4 class="mb-0"><i class="bi bi-credit-card-fill me-2"></i> Complete Your Payment</h4>
+                    <h4 class="mb-0">Complete Your Payment</h4>
                 </div>
                 <div class="card-body p-4" id="payment-container">
-                    <p class="text-center text-muted">Select a payment method from the left.</p>
+                    <p class="text-center text-muted">Select a payment method to proceed.</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Payment Forms (Hidden Initially) -->
+<!-- Payment Forms (Hidden) -->
 <div id="payment-forms" class="d-none">
-    <!-- UPI Payment Form -->
-    <div id="upi" class="payment-form">
+    <!-- Apple Pay -->
+    <div id="applepay" class="payment-form text-center">
+        <button class="btn btn-dark w-100 py-3"><i class="fab fa-apple"></i> Pay with Apple Pay</button>
+    </div>
+
+    <!-- UPI Payment -->
+    <div id="upi" class="payment-form text-center">
+        <h5 class="fw-bold text-primary">Scan & Pay</h5>
+        <img src="@ViewBag.QRCode" class="border shadow-sm rounded-3" style="height: 220px; width: 220px" />
+        <p class="mt-2 text-muted">Scan with any UPI app</p>
+        <p class="fw-bold text-dark">UPI ID: <span class="text-primary">hotel@upi</span></p>
+        @*<button type="submit" class="btn btn-success mt-3">Confirm Payment</button>*@
         <form action="/Payment/MakePayment" method="post">
             @Html.AntiForgeryToken()
-            <div class="text-center my-4">
-                <h5 class="fw-bold text-primary"><i class="bi bi-qr-code me-2"></i> Scan & Pay</h5>
-                <img src="@ViewBag.QRCode" class="border shadow-sm rounded-3" style="height: 220px; width: 220px" />
-                <p class="mt-2 text-muted">Scan with any UPI app</p>
-                <p class="fw-bold text-dark"><i class="bi bi-wallet-fill me-2"></i> UPI ID: <span class="text-primary">hotel@upi</span></p>
-
-                <button type="submit" class="btn btn-success mt-3">
-                    <i class="bi bi-check-circle me-2"></i> Confirm Payment
-                </button>
-            </div>
+            <input type="hidden" name="bookingId" value="@Model.BookingID" />
+            <button class="btn btn-success w-100">Confirm Payment</button>
         </form>
     </div>
 
-
-    <!-- Card Payment Form -->
+    <!-- Credit/Debit Card -->
     <div id="card" class="payment-form">
-        <form action="/Payment/MakePayment" method="post">
+        <form action="/Payment/ProcessPayment" method="post">
             @Html.AntiForgeryToken()
             <div class="mb-3">
                 <label class="form-label fw-bold">Card Number</label>
-                <input type="text" class="form-control" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" oninput="formatCardNumber(this)">
+                <input type="text" class="form-control" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" oninput="formatCardNumber(this)" required>
             </div>
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">Expiry Date</label>
-                    <input type="text" class="form-control" placeholder="MM/YY" maxlength="5" oninput="formatExpiryDate(this)">
+                    <input type="text" class="form-control" placeholder="MM/YY" maxlength="5" oninput="formatExpiryDate(this)" required>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">CVV</label>
-                    <input type="password" class="form-control" placeholder="XXX" maxlength="3">
+                    <input type="password" class="form-control" placeholder="XXX" maxlength="3" required>
                 </div>
             </div>
-            <button class="btn btn-success w-100"><i class="bi bi-credit-card me-2"></i> Pay Now</button>
+            <button class="btn btn-success w-100">Pay Now</button>
         </form>
     </div>
 
-    <!-- Net Banking Form -->
+    <!-- Net Banking -->
     <div id="netbanking" class="payment-form">
-        <form action="/Payment/MakePayment" method="post">
+        <form action="/Payment/ProcessPayment" method="post">
             @Html.AntiForgeryToken()
             <div class="mb-3">
                 <label class="form-label fw-bold">Select Bank</label>
-                <select class="form-control">
+                <select class="form-control" required>
+                    <option value="">Select a Bank</option>
                     <option>State Bank of India</option>
                     <option>HDFC Bank</option>
                     <option>ICICI Bank</option>
@@ -142,18 +114,15 @@
                     <option>Punjab National Bank</option>
                 </select>
             </div>
-            <button class="btn btn-success w-100"><i class="bi bi-bank me-2"></i> Proceed to Pay</button>
+            <button class="btn btn-success w-100">Proceed to Pay</button>
         </form>
     </div>
 </div>
 
-<!-- Custom JavaScript for Dynamic Loading and Input Formatting -->
+<!-- JavaScript -->
 <script>
     function loadPaymentForm(method, element) {
-        document.getElementById("payment-container").innerHTML =
-            document.getElementById(method).outerHTML;
-
-        // Highlight selected method
+        document.getElementById("payment-container").innerHTML = document.getElementById(method).outerHTML;
         document.querySelectorAll("#payment-method-list .list-group-item").forEach(item => {
             item.classList.remove("active", "bg-primary", "text-white");
         });
@@ -174,9 +143,9 @@
         input.value = value;
     }
 </script>
+
 <style>
     #payment-container {
         transition: opacity 0.3s ease-in-out;
     }
-
 </style>

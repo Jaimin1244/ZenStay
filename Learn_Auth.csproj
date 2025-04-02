@@ -191,6 +191,7 @@
     <Compile Include="Attributes\EmailService.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BookingController.cs" />
+    <Compile Include="Controllers\DialogflowController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HotelController.cs" />
     <Compile Include="Controllers\InvoiceController.cs" />
@@ -316,6 +317,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Content\images\Rooms\" />
     <Folder Include="ProfilePictures\" />
+    <Folder Include="Views\Dialogflow\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
